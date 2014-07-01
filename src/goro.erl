@@ -1,4 +1,4 @@
--module(erltool).
+-module(goro).
 -export([
          start/0
         ,init/0

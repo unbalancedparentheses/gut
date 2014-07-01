@@ -1,4 +1,4 @@
-{application, 'erltool',
+{application, 'goro',
  [
   %% A quick description of the application.
   {description, "My project description..."},
@@ -9,7 +9,7 @@
   %% All modules used by the application.
   {modules,
    [
-    'erltool'
+    'goro'
    ]},
 
   %% All of the registered names the application uses. This can be ignored.

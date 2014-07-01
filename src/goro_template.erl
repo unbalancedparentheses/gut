@@ -1,4 +1,4 @@
--module(erltool_template).
+-module(goro_template).
 -export([
          path/2
         ,load/2

@@ -1,4 +1,4 @@
--module(erltool_patterns).
+-module(goro_patterns).
 -export([
          project/0
         ]).

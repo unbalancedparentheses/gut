@@ -1,3 +1,3 @@
-PROJECT = erltool
+PROJECT = goro
 
 include erlang.mk
