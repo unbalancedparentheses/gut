@@ -1,10 +1,12 @@
--module(goro_template).
--export([
-         path/2
-        ,load/2
-        ,render/3
-        ,write/5
-        ]).
+#!/usr/bin/env escript
+
+main(Args) ->
+    [Path | _] = Args,
+    Result = file_tree(Path),
+    io:format("~p", [Result]).
+
+file_tree(Path) ->
+    filelib:wildcard("**/*", Path).
 
 path(PluginName, FileName) ->
     filename:join([".", "plugins", PluginName, "templates", FileName]).
