@@ -2,24 +2,33 @@
 
 main(Args) ->
     [Path | _] = Args,
-    Result = file_tree(Path),
-    io:format("~p", [Result]).
+    update_all_files(Path).
 
 file_tree(Path) ->
-    filelib:wildcard("**/*", Path).
+    Result = filelib:wildcard("**/*", Path),
+    lists:delete("goro.config", Result).
 
-path(PluginName, FileName) ->
-    filename:join([".", "plugins", PluginName, "templates", FileName]).
+update_all_files(Path) ->
+    Files = file_tree(Path),
+    io:format("Files ~p~n", [Files]),
+    {ok, Patterns} = file:consult(filename:join(Path, "goro.config")),
+    lists:foreach(
+      fun (File) ->
+              Filename = filename:join(Path, File),
+              update(Filename, Patterns)
+      end,
+      Files).
 
-load(PluginName, FileName) ->
-    erlang:element(2, file:read_file(path(PluginName, FileName))).
+update(File, Patterns) ->
+    lists:foreach(
+      fun ({VariableName, Variable}) ->
+              {ok, [Value]} = io:fread("Yo mamita, muestrame esa colita ", "~s"),
+              BValue = erlang:list_to_binary(Value),
+              render(File, Variable, BValue)
+      end, Patterns).
 
-render(PluginName, FileName, Pattern) ->
-    binary:replace(load(PluginName, FileName),
-                   erltool_patterns:project(),
-                   erlang:list_to_binary(Pattern),
-                   [global]
-                  ).
 
-write(PluginName, FileName, Pattern, DestFile, DestPath) ->
-    file:write_file(filename:join(DestPath, DestFile), render(PluginName, FileName, Pattern)).
+render(File, Variable, Value) ->
+    {ok, Content} = file:read_file(File),
+    NewContent = binary:replace(Content, Variable, Value, [global]),
+    file:write_file(File, NewContent).
