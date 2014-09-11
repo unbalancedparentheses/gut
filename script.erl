@@ -25,16 +25,16 @@ update_all_files(Path) ->
 
 user_values(Patterns) ->
     lists:foldl(
-      fun ({Name, Pattern}, Acc) ->
-              {ok, [Value]} = io:fread("Yo mamita, muestrame esa colita ", "~s"),
-              [{Name, Pattern, Value} | Acc]
+      fun ({Pattern, Message}, Acc) ->
+              {ok, [Value]} = io:fread(Message, "~s"),
+              [{Pattern, Value} | Acc]
       end,
       [],
       Patterns).
 
 update(File, Patterns) ->
     lists:foreach(
-      fun ({VariableName, Variable, Value}) ->
+      fun ({Variable, Value}) ->
               BValue = erlang:list_to_binary(Value),
               render(File, Variable, BValue)
       end, Patterns).
