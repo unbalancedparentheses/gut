@@ -1,4 +1,0 @@
-erltool
-=======
-
-Erlang Tool
