@@ -9,12 +9,12 @@ file_tree(Path) ->
     ResultNoDir = lists:filter(fun (X) ->
                                        not filelib:is_dir(path(Path, X))
                                end, Result),
-    lists:delete("goro.config", ResultNoDir).
+    lists:delete("gute.config", ResultNoDir).
 
 update_all_files(Path) ->
     Files = file_tree(Path),
     io:format("Files ~p~n", [Files]),
-    {ok, Patterns} = file:consult(filename:join(Path, "goro.config")),
+    {ok, Patterns} = file:consult(filename:join(Path, "gute.config")),
     PatternValues = user_values(Patterns),
     lists:foreach(
       fun (File) ->
