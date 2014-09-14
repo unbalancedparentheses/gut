@@ -1,25 +1,30 @@
 #!/usr/bin/env escript
 
+conf() ->
+    "gute.conf".
+
 main(Args) ->
     [Path | _] = Args,
     update_all_files(Path).
 
 file_tree(Path) ->
     Result = filelib:wildcard("**/*", Path),
-    ResultNoDir = lists:filter(fun (X) ->
-                                       not filelib:is_dir(path(Path, X))
+    FullPathResult = lists:map(fun (File) ->
+                                       filename:join(Path, File)
                                end, Result),
-    lists:delete("gute.config", ResultNoDir).
+    ResultNoDir = lists:filter(fun (X) ->
+                                       (not filelib:is_dir(X)) and not is_conf(X)
+                               end, FullPathResult),
+    io:format("Files ~p~n", [ResultNoDir]),
+    lists:delete(conf(), ResultNoDir).
 
 update_all_files(Path) ->
     Files = file_tree(Path),
-    io:format("Files ~p~n", [Files]),
-    {ok, Patterns} = file:consult(filename:join(Path, "gute.config")),
+    {ok, Patterns} = file:consult(filename:join(Path, conf())),
     PatternValues = user_values(Patterns),
     lists:foreach(
       fun (File) ->
-              Filename = filename:join(Path, File),
-              update(Filename, PatternValues)
+              update(File, PatternValues)
       end,
       Files).
 
@@ -44,5 +49,10 @@ render(File, Variable, Value) ->
     NewContent = binary:replace(Content, Variable, Value, [global]),
     file:write_file(File, NewContent).
 
-path(Path, File) ->
-    filename:join(Path, File).
+is_conf(Path) ->
+    case re:run(Path, [".*", conf(), ".*"]) of
+        nomatch ->
+            false;
+        _ ->
+            true
+    end.
