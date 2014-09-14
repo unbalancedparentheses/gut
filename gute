@@ -7,17 +7,6 @@ main(Args) ->
     [Path | _] = Args,
     update_all_files(Path).
 
-file_tree(Path) ->
-    Result = filelib:wildcard("**/*", Path),
-    FullPathResult = lists:map(fun (File) ->
-                                       filename:join(Path, File)
-                               end, Result),
-    ResultNoDir = lists:filter(fun (X) ->
-                                       (not filelib:is_dir(X)) and not is_conf(X)
-                               end, FullPathResult),
-    io:format("Files ~p~n", [ResultNoDir]),
-    lists:delete(conf(), ResultNoDir).
-
 update_all_files(Path) ->
     Files = file_tree(Path),
     {ok, Patterns} = file:consult(filename:join(Path, conf())),
@@ -28,26 +17,45 @@ update_all_files(Path) ->
       end,
       Files).
 
+file_tree(Path) ->
+    Result = filelib:wildcard("**/*", Path),
+    FullPathResult = lists:map(fun (File) ->
+                                       filename:join(Path, File)
+                               end,
+                               Result),
+    ResultNoDir = lists:filter(fun (X) ->
+                                       (not filelib:is_dir(X)) and not is_conf(X)
+                               end,
+                               FullPathResult),
+    io:format("Files ~p~n", [ResultNoDir]),
+    lists:delete(conf(), ResultNoDir).
+
 user_values(Patterns) ->
     lists:foldl(
-      fun ({Pattern, Message}, Acc) ->
+      fun ({Pattern, Pre, Message}, Acc) ->
               {ok, [Value]} = io:fread(Message, "~s"),
-              [{Pattern, Value} | Acc]
+              [{Pattern, Pre, Value} | Acc]
       end,
       [],
       Patterns).
 
 update(File, Patterns) ->
     lists:foreach(
-      fun ({Variable, Value}) ->
+      fun ({Variable, Pre, Value}) ->
               BValue = erlang:list_to_binary(Value),
-              render(File, Variable, BValue)
-      end, Patterns).
+              render(File, Variable, BValue),
+              rename(File, Pre, Value)
+      end,
+      Patterns).
 
 render(File, Variable, Value) ->
     {ok, Content} = file:read_file(File),
     NewContent = binary:replace(Content, Variable, Value, [global]),
     file:write_file(File, NewContent).
+
+rename(File, Pre, Value) ->
+    NewFilename = erlang:iolist_to_binary(re:replace(File, Pre, Value)),
+    file:rename(File, NewFilename).
 
 is_conf(Path) ->
     case re:run(Path, [".*", conf(), ".*"]) of
