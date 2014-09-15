@@ -1,7 +1,6 @@
 PROJECT = gutenberg
 
-DEPS = lager ibrowse jiffy mixer sync
-dep_lager = git https://github.com/basho/lager.git master
+DEPS = ibrowse jiffy mixer sync
 dep_ibrowse = git https://github.com/cmullaparthi/ibrowse.git master
 dep_jiffy = git https://github.com/davisp/jiffy.git master
 dep_mixer = git https://github.com/opscode/mixer.git master
