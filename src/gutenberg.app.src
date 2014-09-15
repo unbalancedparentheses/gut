@@ -1,0 +1,15 @@
+{application, gutenberg,
+ [
+  {description,
+   "Gutenberg"},
+  {vsn, "0.1"},
+  {applications,
+    [kernel,
+     stdlib,
+     lager,
+     ibrowse
+    ]},
+  {modules, []},
+  {mod, {gutenberg, []}}
+ ]
+}.
