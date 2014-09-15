@@ -1,10 +1,14 @@
 -module(gutenberg).
 -export([
+         main/1,
          start/0,
          start/2,
          stop/0,
          stop/1
         ]).
+
+main(_) ->
+    io:format("Hola").
 
 start() ->
     {ok, _Started} = application:ensure_all_started(gutenberg).
