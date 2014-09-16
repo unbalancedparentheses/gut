@@ -4,3 +4,8 @@ deps
 *.beam
 *.plt
 erl_crash.dump
+log
+logs
+erl_crash.dump
+ebin
+.erlang.mk.packages.v2
