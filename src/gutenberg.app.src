@@ -6,7 +6,8 @@
   {applications,
     [kernel,
      stdlib,
-     ibrowse
+     ibrowse,
+     ssl
     ]},
   {modules, []},
   {mod, {gutenberg, []}}
