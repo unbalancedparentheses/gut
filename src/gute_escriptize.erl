@@ -1,9 +1,5 @@
--module(escriptize).
-
+-module(gute_escriptize).
 -export([escriptize/1]).
-%% #!/usr/bin/env escript
-%% -*- erlang -*-
-%%! -smp enable -config rel/sys.config
 
 
 -spec escriptize(string()) -> ok.
