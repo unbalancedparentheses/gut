@@ -1,40 +1,12 @@
-#!/usr/bin/env escript
-
-generators() ->
-    #{
-       default => "git@github.com:unbalancedparentheses/default-gutenberg-generator.git"
-     }.
+-module(gute_compile).
+-export([
+         compile/1
+        ]).
 
 conf() ->
     "gute.conf".
 
-main(Args) ->
-    [Path | _] = Args,
-
-    check_needed_executables(),
-    update_all_files(Path).
-
-needed_executables() ->
-    [
-     "git"
-    ].
-
-check_needed_executables() ->
-    lists:foreach(
-      fun (X) ->
-              executable_present(X)
-      end,
-      needed_executables()).
-
-executable_present(Name) ->
-    case os:find_executable(Name) of
-        false ->
-            throw(Name ++ " is not present on the system");
-        _ ->
-            ok
-    end.
-
-update_all_files(Path) ->
+compile(Path) ->
     Files = file_tree(Path),
     {ok, Patterns} = file:consult(filename:join(Path, conf())),
     PatternValues = user_values(Patterns),
@@ -91,6 +63,3 @@ is_conf(Path) ->
         _ ->
             true
     end.
-
-git_clone(RepoUrl) ->
-    os:cmd(["git clone ", RepoUrl]).

@@ -8,6 +8,7 @@
         ]).
 
 main(_) ->
+    check_needed_executables(),
     io:format("Hola").
 
 start() ->
@@ -21,3 +22,23 @@ start(_StartType, _StartArgs) ->
 
 stop(_State) ->
     ok.
+
+needed_executables() ->
+    [
+     "git"
+    ].
+
+check_needed_executables() ->
+    lists:foreach(
+      fun (X) ->
+              executable_present(X)
+      end,
+      needed_executables()).
+
+executable_present(Name) ->
+    case os:find_executable(Name) of
+        false ->
+            throw(Name ++ " is not present on the system");
+        _ ->
+            ok
+    end.
