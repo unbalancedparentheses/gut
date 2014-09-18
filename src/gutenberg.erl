@@ -1,10 +1,10 @@
 -module(gutenberg).
 -export([
-         main/1,
          start/0,
          start/2,
          stop/0,
-         stop/1
+         stop/1,
+         main/1
         ]).
 
 %%% Exported functions
@@ -61,8 +61,17 @@ process_commands([_Cmd | _Cmds]) ->
 
 %% Commands
 
-new(Args) ->
-    io:format("~p~n", [Args]).
+new([_]) ->
+    throw(missing_name);
+new([GeneratorName, Name | _]) ->
+    Values = [{<<"{{NAME}}">>, Name}],
+    Generator = gute_generators:find_by_name(GeneratorName),
+
+    gute_generators:clone(Generator, Name),
+    os:cmd("rm -rf " ++ Name ++ "/.git"),
+
+    gute_compile:compile(Name, Values),
+    io:format("Generated ~p on ~p~n", [GeneratorName, Name]).
 
 list() ->
     io:format("Retrieving all generators...~n"),

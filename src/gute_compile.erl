@@ -1,15 +1,13 @@
 -module(gute_compile).
 -export([
-         compile/1
+         compile/2
         ]).
 
 conf() ->
     "gute.conf".
 
-compile(Path) ->
+compile(Path, PatternValues) ->
     Files = file_tree(Path),
-    {ok, Patterns} = file:consult(filename:join(Path, conf())),
-    PatternValues = user_values(Patterns),
     lists:foreach(
       fun (File) ->
               update(File, PatternValues)
@@ -29,21 +27,12 @@ file_tree(Path) ->
     io:format("Files ~p~n", [ResultNoDir]),
     lists:delete(conf(), ResultNoDir).
 
-user_values(Patterns) ->
-    lists:foldl(
-      fun ({Pattern, Pre, Message}, Acc) ->
-              {ok, [Value]} = io:fread(Message, "~s"),
-              [{Pattern, Pre, Value} | Acc]
-      end,
-      [],
-      Patterns).
-
 update(File, Patterns) ->
     lists:foreach(
-      fun ({Variable, Pre, Value}) ->
+      fun ({Variable, Value}) ->
               BValue = erlang:list_to_binary(Value),
               render(File, Variable, BValue),
-              rename(File, Pre, Value)
+              rename(File, Value)
       end,
       Patterns).
 
@@ -52,9 +41,9 @@ render(File, Variable, Value) ->
     NewContent = binary:replace(Content, Variable, Value, [global]),
     file:write_file(File, NewContent).
 
-rename(File, Pre, Value) ->
-    NewFilename = erlang:iolist_to_binary(re:replace(File, Pre, Value)),
-    file:rename(File, NewFilename).
+rename(FileName, Value) ->
+    NewFilename = erlang:iolist_to_binary(re:replace(FileName, "name", Value)),
+    file:rename(FileName, NewFilename).
 
 is_conf(Path) ->
     case re:run(Path, [".*", conf(), ".*"]) of
