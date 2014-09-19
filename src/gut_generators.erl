@@ -64,4 +64,4 @@ github_search(Query, Page) ->
     end.
 
 -spec gut_search_query() -> string().
-gut_search_query() -> "gute-generator".
+gut_search_query() -> "gutenberg-generator".
