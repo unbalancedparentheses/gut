@@ -64,15 +64,16 @@ process_commands([_Cmd | _Cmds]) ->
 
 new([_]) ->
     throw(missing_name);
-new([GeneratorName, Name | _]) ->
+new([ProvidedName, Name | _]) ->
+    FullGeneratorName = full_generator_name(ProvidedName),
     Values = [{<<"{{NAME}}">>, Name}],
-    Generator = gut_generators:find_by_name(GeneratorName),
+    Generator = gut_generators:find_by_name(FullGeneratorName),
 
     gut_generators:clone(Generator, Name),
     os:cmd("rm -rf " ++ Name ++ "/.git"),
 
     gut_compile:compile(Name, Values),
-    io:format("Generated ~p on ~p~n", [GeneratorName, Name]).
+    io:format("Generated ~p on ~p~n", [FullGeneratorName, Name]).
 
 list() ->
     io:format("Retrieving all generators...~n"),
@@ -129,4 +130,23 @@ executable_present(Name) ->
             throw(Name ++ " is not present on the system");
         _ ->
             ok
+    end.
+
+suffix_added(String) ->
+    case re:run(String, suffix()) of
+        nomatch ->
+            false;
+        _ ->
+            true
+    end.
+
+suffix() ->
+    "-gutenberg-generator".
+
+full_generator_name(ProvidedName) ->
+    case suffix_added(ProvidedName) of
+        false ->
+            ProvidedName ++ suffix();
+        true ->
+            ProvidedName
     end.
