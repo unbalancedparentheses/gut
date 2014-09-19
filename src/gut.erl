@@ -22,6 +22,7 @@ stop(_State) ->
     ok.
 
 main(Args) ->
+    gut:start(),
     check_needed_executables(),
     OptSpecList = option_spec_list(),
     case getopt:parse(OptSpecList, Args) of
