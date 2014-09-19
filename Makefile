@@ -9,4 +9,4 @@ dep_getopt = git https://github.com/jcomellas/getopt v0.8.2
 
 include erlang.mk
 
-SHELL_OPTS = -name ${PROJECT}@`hostname` -s ${PROJECT}
+SHELL_OPTS = -name ${PROJECT}@`hostname` -s ${PROJECT} -s sync

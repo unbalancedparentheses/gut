@@ -14,14 +14,15 @@ start() ->
 
 stop() ->
     application:stop(gutenberg).
-
 start(_StartType, _StartArgs) ->
+
     gute_sup:start_link().
 
 stop(_State) ->
     ok.
 
 main(Args) ->
+    start(),
     check_needed_executables(),
     OptSpecList = option_spec_list(),
     case getopt:parse(OptSpecList, Args) of

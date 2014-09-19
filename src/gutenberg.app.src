@@ -1,7 +1,6 @@
 {application, gutenberg,
  [
-  {description,
-   "Gutenberg"},
+  {description, "Gutenberg"},
   {vsn, "0.1"},
   {applications,
     [kernel,
