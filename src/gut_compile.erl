@@ -4,7 +4,7 @@
         ]).
 
 conf() ->
-    "gute.conf".
+    "gut.conf".
 
 compile(Path, PatternValues) ->
     Files = file_tree(Path),
