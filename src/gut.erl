@@ -62,6 +62,8 @@ process_commands(["erlang.mk" | _]) ->
     erlang_mk();
 process_commands(["escriptize" | Cmds]) ->
     escriptize(Cmds);
+process_commands(["update" | _]) ->
+    update();
 process_commands(["version" | _]) ->
     io:format("gut version ~s~n", [version()]);
 process_commands([_Cmd | _Cmds]) ->
@@ -109,6 +111,16 @@ escriptize([]) ->
 escriptize([Name | _]) ->
     gut_escriptize:run(Name).
 
+update() ->
+    Url = "https://raw.githubusercontent.com/unbalancedparentheses/gut/master/bin/gut",
+    case os:find_executable("gut") of
+        false ->
+            io:format("Could not find gut in your system");
+        Path ->
+            {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
+            file:write_file(Path, Content)
+    end.
+
 %% Options
 
 help() ->
@@ -136,6 +148,10 @@ commands() ->
                  Turn your erlang application into an escript.
                  If you do not provide an application name the currenct directory name
                  will be used to determine the application's name.
+
+  update
+
+  version
 ">>,
     io:put_chars(Commands).
 
