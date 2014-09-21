@@ -12,5 +12,5 @@ include erlang.mk
 
 SHELL_OPTS = -name ${PROJECT}@`hostname` -s ${PROJECT}
 
-escriptize:: app
+escriptize: app
 	erl -pa ebin/ -pa deps/*/ebin/ -s gut_escriptize run -s init stop -noshell
