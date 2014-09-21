@@ -73,7 +73,7 @@ new([ProvidedName, Name | _]) ->
     case Generator of
         not_found ->
             io:format("Generator ~s not found ~n", [ProvidedName]);
-        else ->
+        _ ->
             gut_generators:clone(Generator, Name),
             os:cmd("rm -rf " ++ Name ++ "/.git"),
 
