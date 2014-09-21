@@ -8,7 +8,7 @@ Gutenberg is a massive template printing, aka scaffolding, tool for Erlang.
 curl https://raw.githubusercontent.com/unbalancedparentheses/gut/master/utils/install | bash
 ```
 
-If you want to check the install file:
+If you want to check the install script:
 ```bash
 wget https://raw.githubusercontent.com/unbalancedparentheses/gut/master/utils/install
 less install
