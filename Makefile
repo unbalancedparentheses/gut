@@ -11,3 +11,6 @@ dep_getopt = git https://github.com/jcomellas/getopt v0.8.2
 include erlang.mk
 
 SHELL_OPTS = -name ${PROJECT}@`hostname` -s ${PROJECT}
+
+escriptize::
+	erl -pa ebin/ -pa deps/*/ebin/ -s gut_escriptize run -s init stop -noshell
