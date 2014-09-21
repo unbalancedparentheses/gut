@@ -111,27 +111,31 @@ escriptize([Name | _]) ->
 
 help() ->
     OptSpecList = option_spec_list(),
-    getopt:usage(OptSpecList, atom_to_list(?MODULE), standard_io).
+    getopt:usage(OptSpecList, atom_to_list(?MODULE), standard_io),
+    commands().
 
 -spec commands() -> ok.
 commands() ->
-    Commands = <<"Gutenberg can perform this awesome commands for you:
+    Commands = <<
+"  new GEN-TPLT NAME [VARIABLE=VALUE]
+                 Create a new project using a generator, or a new file
+                 using a template. GEN-TPLT is the generator's or
+                 template's name. NAME should be the value for the
+                 variable of the same name. Subsequent VALUE specifications
+                 should be paired with its VARIABLE name.
 
-new GEN-TPLT NAME [VARIABLE=VALUE]
-               Create a new project using a generator, or a new file
-               using a template. GEN-TPLT is the generator's or
-               template's name. NAME should be the value for the
-               variable of the same name. Subsequent VALUE specifications
-               should be paired with its VARIABLE name.
+  find [QUERY]   Find available generators and templates. If QUERY is not
+                 provided then all will be listed.
 
-list           List all available generators and templates.
+  erlang.mk      Download erlang.mk.
+
+  escriptize     Turn your erlang application into an escript.
 ">>,
-   io:put_chars(Commands).
+    io:put_chars(Commands).
 
 option_spec_list() ->
     [
-     {help, $h, "help", undefined, "Show this help information."},
-     {commands, undefined, "commands", undefined, "Show available commands."}
+     {help, $h, "help", undefined, "Show this help information."}
     ].
 
 %% Executables checks
