@@ -4,8 +4,7 @@
          find/1,
          find_all/0,
          find_by_name/1,
-         clone/2,
-         github_search/2
+         clone/2
         ]).
 
 -type generator() :: #{name => binary(),
