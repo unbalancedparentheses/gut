@@ -64,7 +64,7 @@ process_commands([_Cmd | _Cmds]) ->
 new([_]) ->
     throw(missing_name);
 new([ProvidedName, Name | _]) ->
-    FullGeneratorName = gut_suffix:full_generator_name(ProvidedName),
+    FullGeneratorName = gut_suffix:full_name(ProvidedName),
     Values = [{<<"{{NAME}}">>, Name}],
     Generator = gut_generators:find_by_name(FullGeneratorName),
 
