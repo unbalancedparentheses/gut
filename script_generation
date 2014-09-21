@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-make app
-rm gut
-./escritpize
-./gut find
