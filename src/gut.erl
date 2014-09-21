@@ -52,9 +52,8 @@ process_options([], Cmds) ->
 -spec process_commands([string()]) -> ok.
 process_commands(["new" | Cmds]) ->
     new(Cmds);
-process_commands(["list" | Cmds]) ->
-    list(),
-    process_commands(Cmds);
+process_commands(["find" | Cmds]) ->
+    find(Cmds);
 process_commands([]) ->
     ok;
 process_commands([_Cmd | _Cmds]) ->
@@ -75,13 +74,20 @@ new([ProvidedName, Name | _]) ->
     gut_compile:compile(Name, Values),
     io:format("Generated ~p on ~p~n", [FullGeneratorName, Name]).
 
-list() ->
+find([]) ->
     io:format("Retrieving all generators...~n"),
     Generators = gut_generators:find_all(),
     Fun = fun(#{name := Name, description := Desc}) ->
                   io:format("~s\t~s~n", [Name, Desc])
           end,
+    lists:foreach(Fun, Generators);
+find([Name | _]) ->
+    Generators = gut_generators:find_all_by_name(Name),
+    Fun = fun(#{name := GenName, description := Desc}) ->
+                  io:format("~s\t~s~n", [GenName, Desc])
+          end,
     lists:foreach(Fun, Generators).
+
 
 %% Options
 

@@ -30,13 +30,12 @@ item_to_generator(#{<<"clone_url">> := Url,
       name => Name,
       description => Description}.
 
--spec find_by_name(string()) -> generator().
 find_all_by_name(FindName) ->
     All = find_all(),
     lists:filter(fun (#{name := GenNameBin}) ->
                          GenName = erlang:binary_to_list(GenNameBin),
                          case re:run(GenName, FindName) of
-                             undefined ->
+                             nomatch ->
                                  false;
                              _ ->
                                  true
@@ -44,6 +43,7 @@ find_all_by_name(FindName) ->
                  end,
                  All).
 
+-spec find_by_name(string()) -> generator().
 find_by_name(Name) ->
     All = find_all(),
     Result = [Generator || Generator = #{name := GenName} <- All,
