@@ -68,11 +68,16 @@ new([ProvidedName, Name | _]) ->
     Values = [{<<"{{NAME}}">>, Name}],
     Generator = gut_generators:find_by_name(FullGeneratorName),
 
-    gut_generators:clone(Generator, Name),
-    os:cmd("rm -rf " ++ Name ++ "/.git"),
+    case Generator of
+        not_found ->
+            io:format("Generator ~s not found ~n", [ProvidedName]);
+        else ->
+            gut_generators:clone(Generator, Name),
+            os:cmd("rm -rf " ++ Name ++ "/.git"),
 
-    gut_compile:compile(Name, Values),
-    io:format("Generated ~p on ~p~n", [FullGeneratorName, Name]).
+            gut_compile:compile(Name, Values),
+            io:format("Generated ~p on ~p~n", [FullGeneratorName, Name])
+    end.
 
 find([]) ->
     io:format("Retrieving all generators...~n"),
