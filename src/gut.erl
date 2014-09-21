@@ -65,7 +65,7 @@ process_commands([_Cmd | _Cmds]) ->
 new([_]) ->
     throw(missing_name);
 new([ProvidedName, Name | _]) ->
-    FullGeneratorName = full_generator_name(ProvidedName),
+    FullGeneratorName = gut_suffix:full_generator_name(ProvidedName),
     Values = [{<<"{{NAME}}">>, Name}],
     Generator = gut_generators:find_by_name(FullGeneratorName),
 
@@ -130,20 +130,4 @@ executable_present(Name) ->
             throw(Name ++ " is not present on the system");
         _ ->
             ok
-    end.
-
-suffix_added(String) ->
-    case re:run(String, gut_generators:suffix()) of
-        nomatch ->
-            false;
-        _ ->
-            true
-    end.
-
-full_generator_name(ProvidedName) ->
-    case suffix_added(ProvidedName) of
-        false ->
-            ProvidedName ++ gut_generators:suffix();
-        true ->
-            ProvidedName
     end.

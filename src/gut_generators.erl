@@ -1,7 +1,6 @@
 -module(gut_generators).
 
 -export([
-         suffix/0,
          find/1,
          find_all/0,
          find_by_name/1,
@@ -13,13 +12,11 @@
                        description => binary()}.
 
 
--spec suffix() -> string().
-suffix() ->
-    "-gutenberg-generator".
+
 
 -spec find(integer()) -> [generator()].
 find(Page) ->
-    {ok, Resp} = github_search(suffix(), Page),
+    {ok, Resp} = github_search(gut_suffix:suffix(), Page),
     RespBinary = erlang:list_to_binary(Resp),
     #{<<"items">> := Items} = jsxn:decode(RespBinary),
     lists:map(fun item_to_generator/1, Items).
@@ -44,7 +41,8 @@ find_by_name(Name) ->
 
 -spec find_all() -> [generator()].
 find_all() ->
-    find_all(1, []).
+    PreFiltering = find_all(1, []),
+    filter(PreFiltering).
 
 -spec find_all(integer(), [generator()]) -> [generator()].
 find_all(Page, Results) ->
@@ -74,3 +72,8 @@ github_search(Query, Page) ->
         {ok, Status, RespHeaders, RespBody} ->
             {error, {Status, RespHeaders, RespBody}}
     end.
+
+filter(List) ->
+    lists:filter(fun (#{name := Name}) ->
+                         gut_suffix:has_suffix(Name)
+                 end, List).
