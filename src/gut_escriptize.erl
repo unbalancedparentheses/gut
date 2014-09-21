@@ -24,13 +24,14 @@ run(Name) ->
     ok = code:add_paths(filelib:wildcard("deps/*/ebin")),
 
     %% Read the contents of the files in ebin(s)
-    Files = lists:flatmap(fun(Dir) -> load_files(Dir) end, ["ebin"|filelib:wildcard("deps/*/ebin")]),
+    Files = lists:flatmap(fun(Dir) -> load_files(Dir) end,
+                          ["ebin" | filelib:wildcard("deps/*/ebin")]),
 
     case zip:create("mem", Files, [memory]) of
         {ok, {"mem", ZipBin}} ->
-            %% Archive was successfully created. Prefix that with header and write to Name file
-            Header = ["#!/usr/bin/env escript\n%%! +Bc +K true -name ",
-                      Name,
+            %% Archive was successfully created. Prefix that with
+            %% header and write to Name file
+            Header = ["#!/usr/bin/env escript\n%%! +Bc +K true ",
                       " -smp enable\n"],
             HeaderBin = erlang:iolist_to_binary(Header),
             Script = <<HeaderBin/binary, ZipBin/binary>>,
@@ -47,7 +48,7 @@ run(Name) ->
 
     %% Finally, update executable perms for our script
     case os:type() of
-        {unix,_} ->
+        {unix, _} ->
             [] = os:cmd("chmod u+x " ++ Name),
             ok;
         _ ->
@@ -55,8 +56,8 @@ run(Name) ->
     end,
 
     %% Add a helpful message
-    io:format("Congratulations! You now have a self-contained script called ~s in"
-              "your bin directory.\n", [Name]).
+    io:format("Congratulations! You now have a self-contained script "
+              "called ~s in your bin directory.\n", [Name]).
 
 load_files(Dir) ->
     [read_file(Filename, Dir) || Filename <- filelib:wildcard("*", Dir)].
