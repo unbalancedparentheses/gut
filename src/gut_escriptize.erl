@@ -29,7 +29,11 @@ run(Name) ->
     case zip:create("mem", Files, [memory]) of
         {ok, {"mem", ZipBin}} ->
             %% Archive was successfully created. Prefix that with header and write to Name file
-            Script = <<"#!/usr/bin/env escript\n%%! +Bc +K true -name gut -smp enable\n", ZipBin/binary>>,
+            Header = ["#!/usr/bin/env escript\n%%! +Bc +K true -name ",
+                      Name,
+                      " -smp enable\n"],
+            HeaderBin = erlang:iolist_to_binary(Header),
+            Script = <<HeaderBin/binary, ZipBin/binary>>,
             case file:write_file(Name, Script) of
                 ok -> ok;
                 {error, WriteError} ->
