@@ -3,6 +3,7 @@
 -export([
          find/1,
          find_all/0,
+         find_all_by_name/1,
          find_by_name/1,
          clone/2
         ]).
@@ -30,7 +31,7 @@ item_to_generator(#{<<"clone_url">> := Url,
       description => Description}.
 
 -spec find_by_name(string()) -> generator().
-find_by_name(FindName) ->
+find_all_by_name(FindName) ->
     All = find_all(),
     lists:filter(fun (#{name := GenNameBin}) ->
                          GenName = erlang:binary_to_list(GenNameBin),
@@ -42,6 +43,15 @@ find_by_name(FindName) ->
                          end
                  end,
                  All).
+
+find_by_name(Name) ->
+    All = find_all(),
+    Result = [Generator || Generator = #{name := GenName} <- All,
+                           binary_to_list(GenName) == Name],
+    case Result of
+        [] -> not_found;
+        [Generator | _] -> Generator
+    end.
 
 
 -spec find_all() -> [generator()].
