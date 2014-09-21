@@ -2,4 +2,4 @@
 make app
 rm gut
 ./escritpize
-./gut list
+./gut find
