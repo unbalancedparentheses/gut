@@ -1,0 +1,143 @@
+#!/usr/bin/env bash
+
+shopt -s extglob
+set -o errtrace
+set -o errexit
+
+# Check whether a command exists - returns 0 if it does, 1 if it does not
+exists() {
+    if command -v $1 >/dev/null 2>&1
+    then
+        return 0
+    else
+        return 1
+    fi
+}
+
+report_bug() {
+    echo "Please file a bug report at https://github.com/unbalancedparentheses/gut/issues/new"
+    echo " "
+    echo "Please detail your operating system type, version and any other relevant details"
+}
+
+unable_to_retrieve_package() {
+    echo "Unable to retrieve a valid package!"
+    report_bug
+    exit 1
+}
+
+# do_wget URL FILENAME
+do_wget() {
+    echo "trying wget..."
+    wget -O "$2" "$1" 2>/tmp/stderr
+    rc=$?
+    # check for 404
+    grep "ERROR 404" /tmp/stderr 2>&1 >/dev/null
+    if test $? -eq 0; then
+        echo "ERROR 404"
+        unable_to_retrieve_package
+    fi
+
+    # check for bad return status or empty output
+    if test $rc -ne 0 || test ! -s "$2"; then
+        capture_tmp_stderr "wget"
+        return 1
+    fi
+
+    return 0
+}
+
+# do_curl URL FILENAME
+do_curl() {
+    echo "trying curl..."
+    curl -sL -D /tmp/stderr "$1" > "$2"
+    rc=$?
+    # check for 404
+    grep "404 Not Found" /tmp/stderr 2>&1 >/dev/null
+    if test $? -eq 0; then
+        echo "ERROR 404"
+        unable_to_retrieve_package
+    fi
+
+    # check for bad return status or empty output
+    if test $rc -ne 0 || test ! -s "$2"; then
+        capture_tmp_stderr "curl"
+        return 1
+    fi
+
+    return 0
+}
+
+do_perl() {
+    echo "trying perl..."
+    perl -e 'use LWP::Simple; getprint($ARGV[0]);' "$1" > "$2" 2>/tmp/stderr
+    rc=$?
+    # check for 404
+    grep "404 Not Found" /tmp/stderr 2>&1 >/dev/null
+    if test $? -eq 0; then
+        echo "ERROR 404"
+        unable_to_retrieve_package
+    fi
+
+    # check for bad return status or empty output
+    if test $rc -ne 0 || test ! -s "$2"; then
+        capture_tmp_stderr "perl"
+        return 1
+    fi
+
+    return 0
+}
+
+# do_curl URL FILENAME
+do_python() {
+    echo "trying python..."
+    python -c "import sys,urllib2 ; sys.stdout.write(urllib2.urlopen(sys.argv[1]).read())" "$1" > "$2" 2>/tmp/stderr
+    rc=$?
+    # check for 404
+    grep "HTTP Error 404" /tmp/stderr 2>&1 >/dev/null
+    if test $? -eq 0; then
+        echo "ERROR 404"
+        unable_to_retrieve_package
+    fi
+
+    # check for bad return status or empty output
+    if test $rc -ne 0 || test ! -s "$2"; then
+        capture_tmp_stderr "python"
+        return 1
+    fi
+    return 0
+}
+
+# do_download URL FILENAME
+do_download() {
+    echo "downloading $1"
+    echo "  to file $2"
+
+    # we try all of these until we get success.
+    # perl, in particular may be present but LWP::Simple may not be installed
+
+    if exists wget; then
+        do_wget $1 $2 && return 0
+    fi
+
+    if exists curl; then
+        do_curl $1 $2 && return 0
+    fi
+
+    if exists perl; then
+        do_perl $1 $2 && return 0
+    fi
+
+    if exists python; then
+        do_python $1 $2 && return 0
+    fi
+
+    unable_to_retrieve_package
+}
+
+GUT_URL="https://github.com/unbalancedparentheses/gut/raw/master/bin/gut"
+GUT_INSTALL_DIR="$HOME/.gut"
+
+do_download ${GUT_URL} /tmp/gut
+chmod +x /tmp/gut
+mv /tmp/gut /usr/local/bin/gut
