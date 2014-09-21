@@ -115,19 +115,23 @@ help() ->
 -spec commands() -> ok.
 commands() ->
     Commands = <<
-"  new GEN-TPLT NAME [VARIABLE=VALUE]
+"  new GENERATOR NAME [variable=value]
                  Create a new project using a generator, or a new file
-                 using a template. GEN-TPLT is the generator's or
-                 template's name. NAME should be the value for the
-                 variable of the same name. Subsequent VALUE specifications
-                 should be paired with its VARIABLE name.
+                 using a template. GENERATOR is the generator's or
+                 template's name. NAME should be the name of the new project.
+                 Subsequent VALUE specifications should be paired with its VARIABLE name.
 
-  find [QUERY]   Find available generators and templates. If QUERY is not
+  find [QUERY]
+                 Find available generators and templates. If QUERY is not
                  provided then all will be listed.
 
-  erlang.mk      Download erlang.mk.
+  erlang.mk
+                 Download erlang.mk.
 
-  escriptize     Turn your erlang application into an escript.
+  escriptize [application]
+                 Turn your erlang application into an escript.
+                 If you do not provide an application name the currenct directory name
+                 will be used to determine the application's name.
 ">>,
     io:put_chars(Commands).
 
