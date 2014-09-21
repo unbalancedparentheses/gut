@@ -7,8 +7,11 @@
          main/1
         ]).
 
-%%% Exported functions
+%% version number
+version() ->
+    "0.1".
 
+%%% Exported functions
 start() ->
     {ok, _Started} = application:ensure_all_started(gut).
 
@@ -38,7 +41,6 @@ main(Args) ->
 %%% Internal
 
 %% Command line options
-
 -spec process_options([atom()], [string()]) -> ok.
 process_options([help | Opts], Cmds) ->
     help(),
@@ -60,8 +62,8 @@ process_commands(["erlang.mk" | _]) ->
     erlang_mk();
 process_commands(["escriptize" | Cmds]) ->
     escriptize(Cmds);
-process_commands([]) ->
-    ok;
+process_commands(["version" | _]) ->
+    io:format("gut version ~s~n", [version()]);
 process_commands([_Cmd | _Cmds]) ->
     throw(unrecognized_or_unimplemened_command).
 
