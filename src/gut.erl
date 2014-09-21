@@ -50,6 +50,8 @@ process_options([], Cmds) ->
     process_commands(Cmds).
 
 -spec process_commands([string()]) -> ok.
+process_commands(["help" | _]) ->
+    commands();
 process_commands(["new" | Cmds]) ->
     new(Cmds);
 process_commands(["find" | Cmds]) ->
