@@ -1,6 +1,12 @@
 -module(gut_generators).
 
--export([find/1, find_all/0, find_by_name/1, clone/2]).
+-export([
+         find/1,
+         find_all/0,
+         find_by_name/1,
+         clone/2,
+         github_search/2
+        ]).
 
 -type generator() :: #{name => binary(),
                        url => binary(),
@@ -9,7 +15,8 @@
 -spec find(integer()) -> [generator()].
 find(Page) ->
     {ok, Resp} = github_search(gut_search_query(), Page),
-    #{<<"items">> := Items} = jiffy:decode(Resp, [return_maps]),
+    RespBinary = erlang:list_to_binary(Resp),
+    #{<<"items">> := Items} = jsxn:decode(RespBinary),
     lists:map(fun item_to_generator/1, Items).
 
 -spec item_to_generator(map()) -> generator().
