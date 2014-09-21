@@ -56,6 +56,8 @@ process_commands(["find" | Cmds]) ->
     find(Cmds);
 process_commands(["erlang.mk" | _]) ->
     erlang_mk();
+process_commands(["escriptize" | Cmds]) ->
+    escriptize(Cmds);
 process_commands([]) ->
     ok;
 process_commands([_Cmd | _Cmds]) ->
@@ -99,6 +101,11 @@ erlang_mk() ->
     Url = "https://raw.githubusercontent.com/ninenines/erlang.mk/master/erlang.mk",
     {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
     file:write_file("erlang.mk", Content).
+
+escriptize([]) ->
+    gut_escriptize:run();
+escriptize([Name | _]) ->
+    gut_escriptize:run(Name).
 
 %% Options
 
