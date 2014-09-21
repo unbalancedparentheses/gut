@@ -2,7 +2,8 @@
 -export([
          suffix/0,
          has_suffix/1,
-         full_name/1
+         full_name/1,
+         short_name/1
         ]).
 
 -spec suffix() -> string().
@@ -23,4 +24,12 @@ full_name(ProvidedName) ->
             ProvidedName ++ suffix();
         true ->
             ProvidedName
+    end.
+
+short_name(Name) ->
+    case has_suffix(Name) of
+        false ->
+            Name;
+        true ->
+            iolist_to_binary(re:replace(Name, suffix(), ""))
     end.
