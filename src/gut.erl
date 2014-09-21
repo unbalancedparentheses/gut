@@ -133,20 +133,17 @@ executable_present(Name) ->
     end.
 
 suffix_added(String) ->
-    case re:run(String, suffix()) of
+    case re:run(String, gut_generators:suffix()) of
         nomatch ->
             false;
         _ ->
             true
     end.
 
-suffix() ->
-    "-gutenberg-generator".
-
 full_generator_name(ProvidedName) ->
     case suffix_added(ProvidedName) of
         false ->
-            ProvidedName ++ suffix();
+            ProvidedName ++ gut_generators:suffix();
         true ->
             ProvidedName
     end.
