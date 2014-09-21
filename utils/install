@@ -140,4 +140,11 @@ GUT_INSTALL_DIR="$HOME/.gut"
 
 do_download ${GUT_URL} /tmp/gut
 chmod +x /tmp/gut
-mv /tmp/gut /usr/local/bin/gut
+
+if (mv /tmp/gut /usr/local/bin/gut 2>/dev/null); then
+    echo "Correctly installed"
+elif sudo mv /tmp/gut /usr/local/bin/gut; then
+    echo "Correctly installed"
+else
+    echo "Could not be installed"
+fi
