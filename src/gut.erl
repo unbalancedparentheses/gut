@@ -54,6 +54,8 @@ process_commands(["new" | Cmds]) ->
     new(Cmds);
 process_commands(["find" | Cmds]) ->
     find(Cmds);
+process_commands(["erlang.mk" | _]) ->
+    local_erlang_mk();
 process_commands([]) ->
     ok;
 process_commands([_Cmd | _Cmds]) ->
@@ -93,6 +95,10 @@ find([Name | _]) ->
           end,
     lists:foreach(Fun, Generators).
 
+erlang_mk() ->
+    Url = "https://raw.githubusercontent.com/ninenines/erlang.mk/master/erlang.mk",
+    {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
+    file:write_file("erlang.mk", Content).
 
 %% Options
 
