@@ -12,8 +12,7 @@
                        url => binary(),
                        description => binary()}.
 
-
-
+%%% Exported
 
 -spec find(integer()) -> [generator()].
 find(Page) ->
@@ -73,6 +72,8 @@ clone(#{url := Url}, Destination) ->
     Cmd= io_lib:format("git clone ~s ~s", [Url, Destination]),
     os:cmd(Cmd).
 
+%%% Internal
+
 -spec github_search(string(), integer()) -> {ok, binary()} | {error, term()}.
 github_search(Query, Page) ->
     QueryUrl = "https://api.github.com/search/repositories?q=~s&page=~p",
@@ -88,6 +89,9 @@ github_search(Query, Page) ->
             {error, {Status, RespHeaders, RespBody}}
     end.
 
+%% @doc Takes all results from the github search
+%%      and keeps only the ones with the suffix.
+-spec filter([generator()]) -> [generator()].
 filter(List) ->
     lists:filter(fun (#{name := Name}) ->
                          gut_suffix:has_suffix(Name)

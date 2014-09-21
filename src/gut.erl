@@ -84,18 +84,16 @@ new([ProvidedName, Name | _]) ->
     end.
 
 find([]) ->
-    io:format("Retrieving all generators...~n"),
+    io:format("Find generators...~n"),
     Generators = gut_generators:find_all(),
-    Fun = fun(#{name := Name, description := Desc}) ->
-                  io:format("~s\t~s~n", [Name, Desc])
-          end,
-    lists:foreach(Fun, Generators);
+    lists:foreach(fun print_generator/1, Generators);
 find([Name | _]) ->
     Generators = gut_generators:find_all_by_name(Name),
-    Fun = fun(#{name := GenName, description := Desc}) ->
-                  io:format("~s\t~s~n", [GenName, Desc])
-          end,
-    lists:foreach(Fun, Generators).
+    lists:foreach(fun print_generator/1, Generators).
+
+print_generator(#{name := GenName, description := Desc}) ->
+    ShortName = gut_suffix:short_name(GenName),
+    io:format("~s\t\t~s~n", [ShortName, Desc]).
 
 erlang_mk() ->
     Url = "https://raw.githubusercontent.com/ninenines/erlang.mk/master/erlang.mk",
