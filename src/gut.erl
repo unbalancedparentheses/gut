@@ -55,7 +55,7 @@ process_commands(["new" | Cmds]) ->
 process_commands(["find" | Cmds]) ->
     find(Cmds);
 process_commands(["erlang.mk" | _]) ->
-    local_erlang_mk();
+    erlang_mk();
 process_commands([]) ->
     ok;
 process_commands([_Cmd | _Cmds]) ->
