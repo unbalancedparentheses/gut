@@ -9,4 +9,3 @@ logs
 erl_crash.dump
 ebin
 .erlang.mk.packages.v2
-gut
