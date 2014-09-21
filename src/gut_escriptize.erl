@@ -15,7 +15,7 @@ run(Name) ->
     {ok, _} ->
       ok;
     {error, Reason} ->
-      io:format("Invalid syntax in ebin/~p.app: ~p\n", [Name, Reason]),
+      io:format("Invalid syntax in ebin/~s.app: ~p\n", [Name, Reason]),
       halt(1)
   end,
 
@@ -33,11 +33,11 @@ run(Name) ->
       case file:write_file(Name, Script) of
         ok -> ok;
         {error, WriteError} ->
-          io:format("Failed to write ~p: ~p\n", [Name, WriteError]),
+          io:format("Failed to write ~s: ~p\n", [Name, WriteError]),
           halt(1)
       end;
     {error, ZipError} ->
-      io:format("Failed to construct ~p archive: ~p\n", [Name, ZipError]),
+      io:format("Failed to construct ~s archive: ~p\n", [Name, ZipError]),
       halt(1)
   end,
 
@@ -51,7 +51,7 @@ run(Name) ->
   end,
 
   %% Add a helpful message
-  io:format("Congratulations! You now have a self-contained script called ~p in\n"
+    io:format("Congratulations! You now have a self-contained script called ~s in"
               "your bin directory.\n", [Name]).
 
 load_files(Dir) ->
