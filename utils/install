@@ -147,11 +147,11 @@ do_download() {
 move_to_destination() {
     if (mv $1 $2 2>/dev/null ||
             echo "We need your permission to install gut"); then
-        echo "Correctly installed"
+        echo "gut was moved from" $1 "to" $2
     elif sudo mv $1 $2; then
-        echo "Correctly installed"
+        echo "gut was moved from" $1 "to" $2
     else
-        echo "Could not be installed"
+        echo "gut could not be moved from" $1 "to" $2
     fi
 }
 
@@ -163,7 +163,6 @@ install() {
     do_download ${url} ${temp}
     chmod +x ${temp}
     move_to_destination ${temp} ${install_dir}
-    rm ${temp}
 }
 
 install
