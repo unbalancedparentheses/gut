@@ -3,6 +3,7 @@
 shopt -s extglob
 set -o errtrace
 set -o errexit
+set -o nounset
 
 # Check whether a command exists - returns 0 if it does, 1 if it does not
 exists() {
@@ -24,6 +25,14 @@ unable_to_retrieve_package() {
     echo "Unable to retrieve a valid package!"
     report_bug
     exit 1
+}
+
+capture_tmp_stderr() {
+    # spool up /tmp/stderr from all the commands we called
+    if test -f "/tmp/stderr"; then
+        output=$(cat /tmp/stderr)
+        rm /tmp/stderr
+    fi
 }
 
 # do_wget URL FILENAME
@@ -135,16 +144,26 @@ do_download() {
     unable_to_retrieve_package
 }
 
-GUT_URL="https://github.com/unbalancedparentheses/gut/raw/master/bin/gut"
-GUT_INSTALL_DIR="$HOME/.gut"
+move_to_destination() {
+    if (mv $1 $2 2>/dev/null ||
+            echo "We need your permission to install gut"); then
+        echo "Correctly installed"
+    elif sudo mv $1 $2; then
+        echo "Correctly installed"
+    else
+        echo "Could not be installed"
+    fi
+}
 
-do_download ${GUT_URL} /tmp/gut
-chmod +x /tmp/gut
+install() {
+    url="https://github.com/unbalancedparentheses/gut/raw/master/bin/gut"
+    install_dir="/usr/local/bin/gut"
 
-if (mv /tmp/gut /usr/local/bin/gut 2>/dev/null); then
-    echo "Correctly installed"
-elif sudo mv /tmp/gut /usr/local/bin/gut; then
-    echo "Correctly installed"
-else
-    echo "Could not be installed"
-fi
+    temp=$(mktemp /tmp/gut.XXXX)
+    do_download ${url} ${temp}
+    chmod +x ${temp}
+    move_to_destination ${temp} ${install_dir}
+    rm ${temp}
+}
+
+install
