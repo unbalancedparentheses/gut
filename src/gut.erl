@@ -64,6 +64,8 @@ process_commands(["escriptize" | Cmds]) ->
     escriptize(Cmds);
 process_commands(["update" | _]) ->
     update();
+process_commands(["update-gens" | _]) ->
+    update_generators();
 process_commands(["version" | _]) ->
     io:format("gut version ~s~n", [version()]);
 process_commands([_Cmd | _Cmds]) ->
@@ -102,7 +104,8 @@ print_generator(#{name := GenName, description := Desc}) ->
     io:format("~s ~s~n", [color:green(ShortName), Desc]).
 
 erlang_mk() ->
-    Url = "https://raw.githubusercontent.com/ninenines/erlang.mk/master/erlang.mk",
+    Url = "https://raw.githubusercontent.com/"
+          "ninenines/erlang.mk/master/erlang.mk",
     {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
     file:write_file("erlang.mk", Content).
 
@@ -112,7 +115,8 @@ escriptize([Name | _]) ->
     gut_escriptize:run(Name).
 
 update() ->
-    Url = "https://raw.githubusercontent.com/unbalancedparentheses/gut/master/bin/gut",
+    Url = "https://raw.githubusercontent.com/"
+          "unbalancedparentheses/gut/master/bin/gut",
     case os:find_executable("gut") of
         false ->
             io:format("Could not find gut in your system");
@@ -120,6 +124,9 @@ update() ->
             {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
             file:write_file(Path, Content)
     end.
+
+update_generators() ->
+    gut_generators:update().
 
 %% Options
 
@@ -135,7 +142,8 @@ commands() ->
                  Create a new project using a generator, or a new file
                  using a template. GENERATOR is the generator's or
                  template's name. NAME should be the name of the new project.
-                 Subsequent VALUE specifications should be paired with its VARIABLE name.
+                 Subsequent VALUE specifications should be paired with its
+                 VARIABLE name.
 
   find [QUERY]
                  Find available generators and templates. If QUERY is not
@@ -144,14 +152,20 @@ commands() ->
   erlang.mk
                  Download erlang.mk.
 
-  escriptize [application]
+  escriptize [APPLICATION]
                  Turn your erlang application into an escript.
-                 If you do not provide an application name the currenct directory name
-                 will be used to determine the application's name.
+                 If you do not provide an application name the current
+                 directory name will be used to determine the application's
+                 name.
 
   update
+                 Get the latest version of the `gut` executable.
+
+  update-gens
+                 Update all generators in the local `.gut` folder.
 
   version
+                 Show current version information.
 ">>,
     io:put_chars(Commands).
 

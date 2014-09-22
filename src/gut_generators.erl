@@ -5,7 +5,8 @@
          find_all/0,
          find_all_by_name/1,
          find_by_name/1,
-         clone/2
+         clone/2,
+         update/0
         ]).
 
 -type generator() :: #{name => binary(),
@@ -85,6 +86,16 @@ clone(#{name := Name, url := Url}, Destination) ->
         true ->
             throw({eexist, Destination})
     end.
+
+-spec update() -> ok.
+update() ->
+    GeneratorsDirs = filelib:wildcard(local_dir_path() ++ "/*"),
+    PullFun = fun(DirPath) ->
+                      file:set_cwd(DirPath),
+                      os:cmd("touch \"`date`\""),
+                      os:cmd("git pull")
+              end,
+    lists:foreach(PullFun, GeneratorsDirs).
 
 %%% Internal
 

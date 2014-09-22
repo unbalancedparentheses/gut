@@ -21,7 +21,8 @@ file_tree(Path) ->
                                end,
                                Result),
     ResultNoDir = lists:filter(fun (X) ->
-                                       (not filelib:is_dir(X)) and not is_conf(X)
+                                       (not filelib:is_dir(X))
+                                           and not is_conf(X)
                                end,
                                FullPathResult),
     io:format("Files ~p~n", [ResultNoDir]),
