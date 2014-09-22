@@ -99,7 +99,7 @@ find([Name | _]) ->
 
 print_generator(#{name := GenName, description := Desc}) ->
     ShortName = gut_suffix:short_name(GenName),
-    io:format("~s\t\t~s~n", [ShortName, Desc]).
+    io:format("~s ~s~n", [color:green(ShortName), Desc]).
 
 erlang_mk() ->
     Url = "https://raw.githubusercontent.com/ninenines/erlang.mk/master/erlang.mk",
