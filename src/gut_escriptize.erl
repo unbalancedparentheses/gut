@@ -27,6 +27,9 @@ run(Name) ->
     Files = lists:flatmap(fun(Dir) -> load_files(Dir) end,
                           ["ebin" | filelib:wildcard("deps/*/ebin")]),
 
+    Target = "./bin/" ++ Name,
+    filelib:ensure_dir(Target),
+
     case zip:create("mem", Files, [memory]) of
         {ok, {"mem", ZipBin}} ->
             %% Archive was successfully created. Prefix that with
@@ -34,10 +37,10 @@ run(Name) ->
             Header = <<"#!/usr/bin/env escript\n%%! "
                        "+Bc +K true -smp enable\n">>,
             Script = <<Header/binary, ZipBin/binary>>,
-            case file:write_file(Name, Script) of
+            case file:write_file(Target, Script) of
                 ok -> ok;
                 {error, WriteError} ->
-                    io:format("Failed to write ~s: ~p\n", [Name, WriteError]),
+                    io:format("Failed to write ~s: ~p\n", [Target, WriteError]),
                     halt(1)
             end;
         {error, ZipError} ->
@@ -48,7 +51,7 @@ run(Name) ->
     %% Finally, update executable perms for our script
     case os:type() of
         {unix, _} ->
-            [] = os:cmd("chmod u+x " ++ Name),
+            [] = os:cmd("chmod u+x " ++ Target),
             ok;
         _ ->
             ok
