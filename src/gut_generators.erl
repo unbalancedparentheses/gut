@@ -52,7 +52,6 @@ find_by_name(Name) ->
         [Generator | _] -> Generator
     end.
 
-
 -spec find_all() -> [generator()].
 find_all() ->
     PreFiltering = find_all(1, []),
@@ -68,11 +67,34 @@ find_all(Page, Results) ->
     end.
 
 -spec clone(generator(), string()) -> ok | {error, term}.
-clone(#{url := Url}, Destination) ->
-    Cmd= io_lib:format("git clone ~s ~s", [Url, Destination]),
-    os:cmd(Cmd).
+clone(#{name := Name, url := Url}, Destination) ->
+    ensure_local_dir(),
+    NameStr = binary_to_list(Name),
+    LocalDir = local_dir_path() ++ "/" ++ NameStr,
+    case file_exists(LocalDir) of
+        false ->
+            CloneCmd = io_lib:format("git clone ~s ~s", [Url, LocalDir]),
+            os:cmd(CloneCmd);
+        true ->
+            ok
+    end,
+    case file_exists(Destination) of
+        false ->
+            CopyCmd = io_lib:format("cp -avr ~s ~s", [LocalDir, Destination]),
+            os:cmd(CopyCmd);
+        true ->
+            throw({eexist, Destination})
+    end.
 
 %%% Internal
+
+ensure_local_dir() ->
+    LocalPath = local_dir_path(),
+    ok = filelib:ensure_dir(LocalPath),
+    file:make_dir(LocalPath).
+
+local_dir_path() ->
+    os:getenv("HOME") ++ "/.gut".
 
 -spec github_search(string(), integer()) -> {ok, binary()} | {error, term()}.
 github_search(Query, Page) ->
@@ -96,3 +118,6 @@ filter(List) ->
     lists:filter(fun (#{name := Name}) ->
                          gut_suffix:has_suffix(Name)
                  end, List).
+
+file_exists(Path) ->
+    [] /= filelib:wildcard(Path).
