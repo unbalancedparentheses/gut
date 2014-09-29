@@ -79,13 +79,11 @@ new([ProvidedName, Name | _]) ->
     FullGeneratorName = gut_suffix:full_name(ProvidedName),
     Values = [{<<"{{NAME}}">>, Name}],
     Generator = gut_generators:find_by_name(FullGeneratorName),
-    #{name := GenName,
-      url := GenUrl} = Generator,
-
     case Generator of
         not_found ->
             io:format("Generator ~s not found ~n", [ProvidedName]);
-        _ ->
+        #{name := GenName,
+          url := GenUrl} ->
             gut_generators:clone(GenName, GenUrl),
             gut_generators:copy(GenName, Name),
             os:cmd("rm -rf " ++ Name ++ "/.git"),
