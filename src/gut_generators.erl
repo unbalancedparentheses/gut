@@ -81,7 +81,7 @@ clone(#{name := Name, url := Url}, Destination) ->
     end,
     case file_exists(Destination) of
         false ->
-            CopyCmd = io_lib:format("cp -avr ~s ~s", [LocalDir, Destination]),
+            CopyCmd = io_lib:format("cp -a ~s ~s", [LocalDir, Destination]),
             os:cmd(CopyCmd);
         true ->
             throw({eexist, Destination})
