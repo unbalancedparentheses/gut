@@ -6,6 +6,7 @@
          find_all_by_name/1,
          find_by_name/1,
          clone/2,
+         copy/2,
          update/0
         ]).
 
@@ -67,18 +68,23 @@ find_all(Page, Results) ->
             find_all(Page + 1, Results ++ MoreResults)
     end.
 
--spec clone(generator(), string()) -> ok | {error, term}.
-clone(#{name := Name, url := Url}, Destination) ->
+-spec clone(binary(), binary()) -> ok | {error, term}.
+clone(GenName, GenUrl) ->
     ensure_local_dir(),
-    NameStr = binary_to_list(Name),
+    NameStr = binary_to_list(GenName),
     LocalDir = local_dir_path() ++ "/" ++ NameStr,
     case file_exists(LocalDir) of
         false ->
-            CloneCmd = io_lib:format("git clone ~s ~s", [Url, LocalDir]),
+            CloneCmd = io_lib:format("git clone ~s ~s", [GenUrl, LocalDir]),
             os:cmd(CloneCmd);
         true ->
             ok
-    end,
+    end.
+
+-spec copy(binary(), string()) -> ok.
+copy(GenName, Destination) ->
+    NameStr = binary_to_list(GenName),
+    LocalDir = local_dir_path() ++ "/" ++ NameStr,
     case file_exists(Destination) of
         false ->
             CopyCmd = io_lib:format("cp -a ~s ~s", [LocalDir, Destination]),
