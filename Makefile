@@ -11,7 +11,7 @@ dep_colorerl = git git@github.com:unbalancedparentheses/colorerl.git master
 
 include erlang.mk
 
-SHELL_OPTS = -name ${PROJECT}@`hostname` -s ${PROJECT}
+SHELL_OPTS = -name ${PROJECT}@`hostname` -s ${PROJECT} -s sync
 
 escriptize: app
 	erl -pa ebin/ -pa deps/*/ebin/ -s gut_escriptize run -s init stop -noshell
