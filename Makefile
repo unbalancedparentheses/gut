@@ -15,3 +15,9 @@ SHELL_OPTS = -name ${PROJECT}@`hostname` -s ${PROJECT}
 
 escriptize: app
 	erl -pa ebin/ -pa deps/*/ebin/ -s gut_escriptize run -s init stop -noshell
+
+publish: escriptize
+	bin/gut find
+	git add bin/gut
+	git commit -m "updated gut binary"
+	git push origin master
