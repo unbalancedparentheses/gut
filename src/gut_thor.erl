@@ -18,7 +18,7 @@ exported(true, Module, Function, Opts) ->
         ok = Module:Function(Opts)
     catch
         _:{error, Message} ->
-            io:format("~p~n", [Message]);
+            io:format("~s~n", [Message]);
         _:Exception ->
             io:format("An unexpected error ocurred.~n"
                       "Please fill a new issue https://github.com/unbalancedparentheses/gut/issues/new~n~n"

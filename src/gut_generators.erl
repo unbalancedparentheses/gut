@@ -90,7 +90,8 @@ copy(GenName, Destination) ->
             CopyCmd = io_lib:format("cp -a ~s ~s", [LocalDir, Destination]),
             os:cmd(CopyCmd);
         true ->
-            throw({eexist, Destination})
+            Message = "Folder " ++ Destination ++ " is already present",
+            +throw({error, Message})
     end.
 
 -spec update() -> ok.
