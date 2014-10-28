@@ -14,8 +14,6 @@ version(_) ->
     io:format("0.2~n"),
     ok.
 
-new([_]) ->
-    throw({error, "Missing name"});
 new([ProvidedName, Name | _]) ->
     FullGeneratorName = gut_suffix:full_name(ProvidedName),
     Values = [{<<"{{NAME}}">>, Name}],
@@ -32,7 +30,9 @@ new([ProvidedName, Name | _]) ->
             gut_compile:compile(Name, Values),
             io:format("Generated ~p on ~p~n", [FullGeneratorName, Name])
     end,
-    ok.
+    ok;
+new(_) ->
+    throw({error, "Missing generator/template name"}).
 
 find([]) ->
     io:format("Find generators...~n"),
