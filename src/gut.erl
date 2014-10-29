@@ -23,7 +23,9 @@ stop(_State) ->
 main(Args) ->
     gut:start(),
     check_needed_executables(),
-    thorerl:parse(gut_commands, Args).
+    thorerl:parse(gut_commands,
+                  Args,
+                  "https://github.com/unbalancedparentheses/gut/issues/new").
 
 %% Executables checks
 needed_executables() ->
