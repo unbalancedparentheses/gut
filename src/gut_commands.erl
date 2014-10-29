@@ -7,7 +7,7 @@
          erlangmk/1,
          escriptize/1,
          update/1,
-         'update.gens'/1
+         'update gens'/1
         ]).
 
 %% Commands
@@ -32,7 +32,7 @@ help() ->
       "update" => #{desc => "Get the latest version of the gut executable",
                     long => ""
                    },
-      "update.gens" => #{desc => "Update all generators in the local ~/.gut folder",
+      "update gens" => #{desc => "Update all generators in the local ~/.gut folder",
                          long => ""
                         },
       "help" => #{desc => "Print help information",
@@ -103,6 +103,6 @@ update(_) ->
     end,
     ok.
 
-'update.gens'(_) ->
+'update gens'(_) ->
     gut_generators:update(),
     ok.
