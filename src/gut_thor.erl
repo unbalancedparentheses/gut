@@ -20,10 +20,10 @@ parse(Module, Args) ->
             halt(1)
     end.
 
+process(Module, []) ->
+    print_help(Module, []);
 process(Module, ["help" | Opts]) ->
-    Help = Module:help(),
-
-    print_help(Help, Opts);
+    print_help(Module, Opts);
 process(Module, [Function| Opts]) ->
     Function2 = erlang:list_to_atom(Function),
 
@@ -32,21 +32,26 @@ process(Module, [Function| Opts]) ->
 
     exported(Exported, Module, Function2, Opts).
 
-exported(false, _, Function, Opts) ->
+exported(false, Module, Function, Opts) ->
     io:format("Command ~p with arguments ~p is not supported ~n", [Function, Opts]),
+
+    print_help(Module, Opts),
     halt(1);
 exported(true, Module, Function, Opts) ->
     ok = Module:Function(Opts).
 
+print_help(Module, []) ->
+    Help = Module:help(),
 
-print_help(Help, []) ->
     Padding = padding_size(maps:keys(Help)),
     maps:fold(fun (Key, #{desc := Desc}, _) ->
                       PaddedKey = string:left(Key, Padding),
-                      ColorPaddedKey = color:red(PaddedKey),
+                      ColorPaddedKey = color:blue(PaddedKey),
                       io:format("~s # ~s~n", [ColorPaddedKey, Desc])
               end, 0, Help);
-print_help(Help, [Command | _]) ->
+print_help(Module, [Command | _]) ->
+    Help = Module:help(),
+
     case maps:is_key(Command, Help) of
         true ->
             #{desc := Desc, long := Long} = maps:get(Command, Help),
@@ -56,11 +61,4 @@ print_help(Help, [Command | _]) ->
     end.
 
 padding_size(List) ->
-    lists:foldl(fun (X, Length) ->
-                        largest(string:len(X), Length)
-                end, 0, List).
-
-largest(X, Y) when X < Y ->
-    Y;
-largest(X, _Y) ->
-    X.
+    lists:max(lists:map(fun length/1, List)).
