@@ -23,7 +23,7 @@ stop(_State) ->
 main(Args) ->
     gut:start(),
     check_needed_executables(),
-    gut_thor:process(gut_commands, Args).
+    gut_thor:parse(gut_commands, Args).
 
 %% Executables checks
 needed_executables() ->

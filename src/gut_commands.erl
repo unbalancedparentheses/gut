@@ -1,15 +1,42 @@
 -module(gut_commands).
 -export([
+         help/0,
+         version/1,
          new/1,
          find/1,
-         erlang_mk/1,
+         erlangmk/1,
          escriptize/1,
-         version/1,
          update/1,
-         update_generators/1
+         'update.gens'/1
         ]).
 
 %% Commands
+help() ->
+    #{
+      "version" =>
+          #{desc => "Prints gutenberg version",
+            long => ""
+           },
+      "new" => #{desc => "Creates a new project or file",
+                 long => ""
+                },
+      "find" => #{desc => "Find available generators and templates",
+                  long => ""
+                 },
+      "erlangmk" => #{desc => "Downloads erlang.mk",
+                      long => ""
+                     },
+      "escriptize" => #{desc => "Turn your erlang application into an escript",
+                        long => ""
+                       },
+      "update" => #{desc => "Get the latest version of the gut executable",
+                    long => ""
+                   },
+      "update.gens" => #{desc => "Update all generators in the local ~/.gut folder",
+                         long => ""
+                        }
+     }.
+
 version(_) ->
     io:format("0.2~n"),
     ok.
@@ -35,7 +62,7 @@ new(_) ->
     throw({error, "Missing generator/template name"}).
 
 find([]) ->
-    io:format("Find generators...~n"),
+    io:format("Fetching list of generators and templates from github...~n"),
     Generators = gut_generators:find_all(),
     lists:foreach(fun print_generator/1, Generators),
     ok;
@@ -48,7 +75,7 @@ print_generator(#{name := GenName, description := Desc}) ->
     ShortName = gut_suffix:short_name(GenName),
     io:format("~s ~s~n", [color:green(ShortName), Desc]).
 
-erlang_mk(_) ->
+erlangmk(_) ->
     Url = "https://raw.githubusercontent.com/"
         "ninenines/erlang.mk/master/erlang.mk",
     {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
@@ -73,6 +100,6 @@ update(_) ->
     end,
     ok.
 
-update_generators(_) ->
+'update.gens'(_) ->
     gut_generators:update(),
     ok.
