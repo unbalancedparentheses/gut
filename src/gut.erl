@@ -23,7 +23,7 @@ stop(_State) ->
 main(Args) ->
     gut:start(),
     check_needed_executables(),
-    gut_thor:parse(gut_commands, Args).
+    thorerl:parse(gut_commands, Args).
 
 %% Executables checks
 needed_executables() ->
