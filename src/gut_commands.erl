@@ -34,7 +34,10 @@ help() ->
                    },
       "update.gens" => #{desc => "Update all generators in the local ~/.gut folder",
                          long => ""
-                        }
+                        },
+      "help" => #{desc => "Print help information",
+                  long => ""
+                 }
      }.
 
 version(_) ->
