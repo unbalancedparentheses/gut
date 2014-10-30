@@ -67,16 +67,25 @@ new(_) ->
 find([]) ->
     io:format("Fetching list of generators and templates from github...~n"),
     Generators = gut_generators:find_all(),
-    lists:foreach(fun print_generator/1, Generators),
+    print_generators(Generators),
     ok;
 find([Name | _]) ->
     Generators = gut_generators:find_all_by_name(Name),
-    lists:foreach(fun print_generator/1, Generators),
+    print_generators(Generators),
     ok.
 
-print_generator(#{name := GenName, description := Desc}) ->
+print_generators(Generators) ->
+    Padding = padding_size(Generators),
+    lists:foreach(fun (X) ->
+                          print_generator(X, Padding)
+                  end,
+                  Generators).
+
+print_generator(#{name := GenName, description := Desc}, Padding) ->
     ShortName = gut_suffix:short_name(GenName),
-    io:format("~s ~s~n", [color:green(ShortName), Desc]).
+    ShortName2 = erlang:binary_to_list(ShortName),
+    ShortNamePadded = string:left(ShortName2, Padding),
+    io:format("~s # ~s~n", [color:green(ShortNamePadded), Desc]).
 
 erlangmk(_) ->
     Url = "https://raw.githubusercontent.com/"
@@ -106,3 +115,9 @@ update(_) ->
 'update gens'(_) ->
     gut_generators:update(),
     ok.
+
+padding_size(List) ->
+    lists:max(lists:map(fun (#{name := Name}) ->
+                                ShortName = gut_suffix:short_name(Name),
+                                erlang:size(ShortName)
+                        end, List)).
