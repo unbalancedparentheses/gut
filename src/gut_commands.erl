@@ -7,7 +7,7 @@
          erlangmk/1,
          escriptize/1,
          update/1,
-         'update gens'/1
+         'update.gens'/1
         ]).
 
 %% Commands
@@ -32,7 +32,7 @@ help() ->
       "update" => #{desc => "Get the latest version of the gut executable",
                     long => ""
                    },
-      "update gens" => #{desc => "Update all generators in the local ~/.gut folder",
+      "update.gens" => #{desc => "Update all generators in the local ~/.gut folder",
                          long => ""
                         },
       "help" => #{desc => "Print help information",
@@ -112,15 +112,16 @@ update(_) ->
         "unbalancedparentheses/gut/master/bin/gut",
     case os:find_executable("gut") of
         false ->
-            io:format("Could not find gut in your system");
+            throw({error, "Could not find gut in your system"});
         Path ->
             {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
-            file:write_file(Path, Content),
-            io:format("Updated gut!~n")
+            file:write_file(Path, Content)
     end,
+    gut_generators:update(),
+    io:format("Updated gut!~n"),
     ok.
 
-'update gens'(_) ->
+'update.gens'(_) ->
     gut_generators:update(),
     ok.
 

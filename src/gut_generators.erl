@@ -100,7 +100,8 @@ update() ->
     GeneratorsDirs = filelib:wildcard(local_dir_path() ++ "/*"),
     PullFun = fun(DirPath) ->
                       file:set_cwd(DirPath),
-                      os:cmd("touch \"`date`\""),
+                      os:cmd("git reset --hard HEAD"),
+                      os:cmd("git clean -f"),
                       os:cmd("git pull")
               end,
     lists:foreach(PullFun, GeneratorsDirs).
