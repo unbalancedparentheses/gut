@@ -10,7 +10,8 @@ compile(Path, PatternValues) ->
     Files = file_tree(Path),
     lists:foreach(
       fun (File) ->
-              update(File, PatternValues)
+              update(File, PatternValues),
+              print_generated(File)
       end,
       Files).
 
@@ -25,7 +26,6 @@ file_tree(Path) ->
                                            and not is_conf(X)
                                end,
                                FullPathResult),
-    io:format("Files ~p~n", [ResultNoDir]),
     lists:delete(conf(), ResultNoDir).
 
 update(File, Patterns) ->
@@ -53,3 +53,7 @@ is_conf(Path) ->
         _ ->
             true
     end.
+
+print_generated(File) ->
+    io:format(color:green("* creating ")),
+    io:format("~s~n", [File]).

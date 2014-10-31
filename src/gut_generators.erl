@@ -91,7 +91,7 @@ copy(GenName, Destination) ->
             os:cmd(CopyCmd);
         true ->
             Message = "Folder " ++ Destination ++ " is already present",
-            +throw({error, Message})
+            throw({error, Message})
     end.
 
 -spec update() -> ok.
