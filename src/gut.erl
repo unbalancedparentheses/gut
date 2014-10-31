@@ -28,7 +28,7 @@ main(Args) ->
                   Args,
                   "https://github.com/unbalancedparentheses/gut/issues/new").
 
-%% Executables checks
+%% internal
 needed_executables() ->
     [
      "git"
