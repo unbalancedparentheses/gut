@@ -108,7 +108,8 @@ update(_) ->
             io:format("Could not find gut in your system");
         Path ->
             {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
-            file:write_file(Path, Content)
+            file:write_file(Path, Content),
+            io:format("Updated gut!~n")
     end,
     ok.
 
