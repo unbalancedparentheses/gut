@@ -5,15 +5,23 @@ gutenberg
 Gutenberg is a massive template printing, aka scaffolding, tool for Erlang.
 
 #tl;dr. install
+
+curl
 ```bash
-curl https://raw.githubusercontent.com/unbalancedparentheses/gut/master/utils/install | bash
+curl -L -O https://github.com/unbalancedparentheses/gut/raw/master/bin/gut
+chmod +x ./gut
+sudo mv ./gut /usr/local/bin/
+
+gut find
 ```
 
-If you want to check the install script:
+wget
 ```bash
-wget https://raw.githubusercontent.com/unbalancedparentheses/gut/master/utils/install
-less install
-bash install
+wget https://github.com/unbalancedparentheses/gut/raw/master/bin/gut
+chmod + ./gut
+sudo mv ./gut /usr/local/bin/
+
+gut find
 ```
 
 ![Hipster Gutenberg](https://raw.githubusercontent.com/unbalancedparentheses/gut/master/gutenberg.jpg)
