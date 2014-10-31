@@ -18,7 +18,7 @@ gut find
 ###wget
 ```bash
 wget https://github.com/unbalancedparentheses/gut/raw/master/bin/gut
-chmod + ./gut
+chmod +x ./gut
 sudo mv ./gut /usr/local/bin/
 
 gut find
