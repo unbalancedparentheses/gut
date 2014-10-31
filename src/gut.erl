@@ -56,7 +56,7 @@ check_version() ->
         true ->
             ok;
         false ->
-            io:format("Erlang 17 or higher is needed. You are using Erlang ~p ~n", [Major]),
+            io:format("Erlang 17 or higher is needed. You are using Erlang ~p.~n", [Major]),
             halt(1)
     end.
 
