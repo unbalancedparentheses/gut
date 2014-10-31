@@ -58,7 +58,7 @@ new([ProvidedName, Name | _]) ->
             os:cmd("rm -rf " ++ Name ++ "/.git"),
 
             gut_compile:compile(Name, Values),
-            io:format("~nYour gut project was created successfully.")
+            io:format("~nYour gut project was created successfully.~n")
     end,
     ok;
 new(_) ->
