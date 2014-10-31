@@ -87,6 +87,7 @@ copy(GenName, Destination) ->
     LocalDir = local_dir_path() ++ "/" ++ NameStr,
     case file_exists(Destination) of
         false ->
+            filelib:ensure_dir(Destination),
             CopyCmd = io_lib:format("cp -a ~s ~s", [LocalDir, Destination]),
             os:cmd(CopyCmd);
         true ->

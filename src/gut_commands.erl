@@ -41,12 +41,19 @@ help() ->
      }.
 
 version(_) ->
-    io:format("0.2.1~n"),
+    io:format("~s~n", [version()]),
     ok.
 
-new([ProvidedName, Name | _]) ->
+version() ->
+    {ok, Keys} = application:get_all_key(gut),
+    proplists:get_value(vsn, Keys).
+
+new([ProvidedName, Path | _]) ->
     FullGeneratorName = gut_suffix:full_name(ProvidedName),
+
+    Name = filename:basename(Path),
     Values = [{<<"{{NAME}}">>, Name}],
+
     Generator = gut_generators:find_by_name(FullGeneratorName),
     case Generator of
         not_found ->
@@ -54,10 +61,10 @@ new([ProvidedName, Name | _]) ->
         #{name := GenName,
           url := GenUrl} ->
             gut_generators:clone(GenName, GenUrl),
-            gut_generators:copy(GenName, Name),
-            os:cmd("rm -rf " ++ Name ++ "/.git"),
+            gut_generators:copy(GenName, Path),
+            os:cmd("rm -rf " ++ Path ++ "/.git"),
 
-            gut_compile:compile(Name, Values),
+            gut_compile:compile(Path, Values),
             io:format("~nYour gut project was created successfully.~n")
     end,
     ok;
