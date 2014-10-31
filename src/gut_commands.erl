@@ -29,7 +29,7 @@ help() ->
       "escriptize" => #{desc => "Turn your erlang application into an escript",
                         long => ""
                        },
-      "update" => #{desc => "Get the latest version of the gut executable",
+      "update" => #{desc => "Get the latest version of the gut executable and update.gens",
                     long => ""
                    },
       "update.gens" => #{desc => "Update all generators in the local ~/.gut folder",
