@@ -41,7 +41,7 @@ help() ->
      }.
 
 version(_) ->
-    io:format("0.2~n"),
+    io:format("0.2.1~n"),
     ok.
 
 new([ProvidedName, Name | _]) ->
