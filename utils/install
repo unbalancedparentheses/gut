@@ -77,46 +77,6 @@ do_curl() {
     return 0
 }
 
-do_perl() {
-    echo "trying perl..."
-    perl -e 'use LWP::Simple; getprint($ARGV[0]);' "$1" > "$2" 2>/tmp/stderr
-    rc=$?
-    # check for 404
-    grep "404 Not Found" /tmp/stderr 2>&1 >/dev/null
-    if test $? -eq 0; then
-        echo "ERROR 404"
-        unable_to_retrieve_package
-    fi
-
-    # check for bad return status or empty output
-    if test $rc -ne 0 || test ! -s "$2"; then
-        capture_tmp_stderr "perl"
-        return 1
-    fi
-
-    return 0
-}
-
-# do_curl URL FILENAME
-do_python() {
-    echo "trying python..."
-    python -c "import sys,urllib2 ; sys.stdout.write(urllib2.urlopen(sys.argv[1]).read())" "$1" > "$2" 2>/tmp/stderr
-    rc=$?
-    # check for 404
-    grep "HTTP Error 404" /tmp/stderr 2>&1 >/dev/null
-    if test $? -eq 0; then
-        echo "ERROR 404"
-        unable_to_retrieve_package
-    fi
-
-    # check for bad return status or empty output
-    if test $rc -ne 0 || test ! -s "$2"; then
-        capture_tmp_stderr "python"
-        return 1
-    fi
-    return 0
-}
-
 # do_download URL FILENAME
 do_download() {
     echo "downloading $1"
@@ -131,14 +91,6 @@ do_download() {
 
     if exists curl; then
         do_curl $1 $2 && return 0
-    fi
-
-    if exists perl; then
-        do_perl $1 $2 && return 0
-    fi
-
-    if exists python; then
-        do_python $1 $2 && return 0
     fi
 
     unable_to_retrieve_package
