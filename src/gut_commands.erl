@@ -108,22 +108,24 @@ escriptize([Name | _]) ->
     ok.
 
 update(_) ->
-    Url = "https://raw.githubusercontent.com/"
-        "unbalancedparentheses/gut/master/bin/gut",
-    case os:find_executable("gut") of
-        false ->
-            throw({error, "Could not find gut in your system"});
-        Path ->
-            {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
-            file:write_file(Path, Content)
-    end,
-    gut_generators:update(),
-    io:format("Updated gut!~n"),
-    ok.
+  io:format("Updating generators..."),
+  gut_generators:update(),
+  io:format(" ~s~n", [color:green("done")]),
+
+  ScriptPath = escript:script_name(),
+  io:format("Updating gut binary in ~s...", [ScriptPath]),
+  Url = "https://raw.githubusercontent.com/"
+    "unbalancedparentheses/gut/master/bin/gut",
+  {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
+  file:write_file(ScriptPath, Content),
+  io:format(" ~s~n", [color:green("done")]),
+  ok.
 
 'update.gens'(_) ->
-    gut_generators:update(),
-    ok.
+  io:format("Updating generators..."),
+  gut_generators:update(),
+  io:format(" ~s~n", [color:green("done")]),
+  ok.
 
 padding_size(List) ->
     lists:max(lists:map(fun (#{name := Name}) ->
