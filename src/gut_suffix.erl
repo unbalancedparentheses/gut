@@ -8,28 +8,28 @@
 
 -spec suffix() -> string().
 suffix() ->
-    "-gutenberg-generator".
+  "-gutenberg-generator".
 
 has_suffix(String) ->
-    case re:run(String, suffix()) of
-        nomatch ->
-            false;
-        _ ->
-            true
-    end.
+  case re:run(String, suffix()) of
+    nomatch ->
+      false;
+    _ ->
+      true
+  end.
 
 full_name(ProvidedName) ->
-    case has_suffix(ProvidedName) of
-        false ->
-            ProvidedName ++ suffix();
-        true ->
-            ProvidedName
-    end.
+  case has_suffix(ProvidedName) of
+    false ->
+      ProvidedName ++ suffix();
+    true ->
+      ProvidedName
+  end.
 
 short_name(Name) ->
-    case has_suffix(Name) of
-        false ->
-            Name;
-        true ->
-            iolist_to_binary(re:replace(Name, suffix(), ""))
-    end.
+  case has_suffix(Name) of
+    false ->
+      Name;
+    true ->
+      iolist_to_binary(re:replace(Name, suffix(), ""))
+  end.

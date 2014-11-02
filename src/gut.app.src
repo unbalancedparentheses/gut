@@ -4,11 +4,11 @@
    "Gutenberg"},
   {vsn, "0.3.2"},
   {applications,
-    [kernel,
-     stdlib,
-     ibrowse,
-     ssl
-    ]},
+   [kernel,
+    stdlib,
+    ibrowse,
+    ssl
+   ]},
   {modules, []},
   {mod, {gut, []}}
  ]
