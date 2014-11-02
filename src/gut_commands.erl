@@ -1,3 +1,4 @@
+%% -*- coding: utf-8 -*-
 -module(gut_commands).
 -export([
          help/0,
@@ -92,11 +93,15 @@ print_generators(Generators) ->
                   end,
                   Generators).
 
-print_generator(#{name := GenName, description := Desc}, Padding) ->
+print_generator(#{name := GenName,
+                  description := Desc,
+                  user := User,
+                  stars := Stars
+                 }, Padding) ->
     ShortName = gut_suffix:short_name(GenName),
     ShortName2 = erlang:binary_to_list(ShortName),
     ShortNamePadded = string:left(ShortName2, Padding),
-    io:format("~s # ~s~n", [color:green(ShortNamePadded), Desc]).
+  io:format("~s # ~s # ~s # ~p~n", [color:green(ShortNamePadded), Desc, User, Stars]).
 
 erlangmk(_) ->
     Url = "https://raw.githubusercontent.com/"

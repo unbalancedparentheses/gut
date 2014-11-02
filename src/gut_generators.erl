@@ -1,7 +1,6 @@
 -module(gut_generators).
 
 -export([
-         find/1,
          find_all/0,
          find_all_by_name/1,
          find_by_name/1,
@@ -24,12 +23,22 @@ find(Page) ->
     lists:map(fun item_to_generator/1, Items).
 
 -spec item_to_generator(map()) -> generator().
-item_to_generator(#{<<"clone_url">> := Url,
-                    <<"name">> := Name,
-                    <<"description">> := Description}) ->
-    #{url => Url,
-      name => Name,
-      description => Description}.
+item_to_generator(Item) ->
+  #{<<"clone_url">> := Url,
+    <<"name">> := Name,
+    <<"description">> := Description,
+    <<"stargazers_count">> := Stars,
+    <<"owner">> := Owner
+   } = Item,
+
+  #{<<"login">> := User} = Owner,
+
+  #{url => Url,
+    name => Name,
+    description => Description,
+    stars => Stars,
+    user => User
+   }.
 
 find_all_by_name(FindName) ->
     All = find_all(),
@@ -56,8 +65,9 @@ find_by_name(Name) ->
 
 -spec find_all() -> [generator()].
 find_all() ->
-    PreFiltering = find_all(1, []),
-    filter(PreFiltering).
+  PreFiltering = find_all(1, []),
+  Filtered = filter(PreFiltering),
+  sort_by_stars(Filtered).
 
 -spec find_all(integer(), [generator()]) -> [generator()].
 find_all(Page, Results) ->
@@ -139,5 +149,11 @@ filter(List) ->
                          gut_suffix:has_suffix(Name)
                  end, List).
 
+sort_by_stars(List) ->
+  Sort = fun(#{stars := AStars}, #{stars := BStars}) ->
+             AStars >= BStars
+         end,
+  lists:sort(Sort, List).
+
 file_exists(Path) ->
-    [] /= filelib:wildcard(Path).
+  [] /= filelib:wildcard(Path).
