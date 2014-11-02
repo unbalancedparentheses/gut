@@ -44,10 +44,10 @@ check_needed_executables() ->
 executable_present(Name) ->
     case os:find_executable(Name) of
         false ->
-            io:format(Name ++ " is not present on the system~n"),
-            halt(1);
-        _ ->
-            ok
+        io:format(standard_error, Name ++ " is not present on the system~n"),
+        halt(1);
+      _ ->
+        ok
     end.
 
 check_version() ->
@@ -56,8 +56,8 @@ check_version() ->
         true ->
             ok;
         false ->
-            io:format("Erlang 17 or higher is needed. You are using Erlang ~p.~n", [Major]),
-            halt(1)
+        io:format(standard_error, "Erlang 17 or higher is needed. You are using Erlang ~p.~n", [Major]),
+        halt(1)
     end.
 
 version() ->
