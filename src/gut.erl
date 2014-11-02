@@ -44,7 +44,7 @@ check_needed_executables() ->
 executable_present(Name) ->
   case os:find_executable(Name) of
     false ->
-      io:format(standard_error, Name ++ " is not present on the system~n"),
+      io:format(standard_error, "~s is not present on the system~n", [Name]),
       halt(1);
     _ ->
       ok
