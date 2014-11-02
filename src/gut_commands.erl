@@ -62,7 +62,11 @@ new([ProvidedName, Path | _]) ->
           url := GenUrl} ->
             gut_generators:clone(GenName, GenUrl),
             gut_generators:copy(GenName, Path),
+
             os:cmd("rm -rf " ++ Path ++ "/.git"),
+            os:cmd("rm -rf " ++ Path ++ "/README.md"),
+
+            gut_readme:generate(Path, Name),
 
             gut_compile:compile(Path, Values),
             io:format("~nYour gut project was created successfully.~n")
