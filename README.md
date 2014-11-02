@@ -11,8 +11,6 @@ Gutenberg is a massive template printing, aka scaffolding, tool for Erlang.
 curl -L -O https://github.com/unbalancedparentheses/gut/raw/master/bin/gut
 chmod +x ./gut
 sudo mv ./gut /usr/local/bin/
-
-gut find
 ```
 
 ###wget
@@ -20,8 +18,6 @@ gut find
 wget https://github.com/unbalancedparentheses/gut/raw/master/bin/gut
 chmod +x ./gut
 sudo mv ./gut /usr/local/bin/
-
-gut find
 ```
 
 ##heapster
