@@ -1,17 +1,17 @@
 -module(gut_compile).
 -export([
-         compile/2
+         compile/3
         ]).
 
 conf() ->
     "gut.conf".
 
-compile(Path, PatternValues) ->
+compile(Path, ProjectName, PatternValues) ->
     Files = file_tree(Path),
     lists:foreach(
       fun (File) ->
-              update(File, PatternValues),
-              print_generated(File)
+              NewFileName = update(File, ProjectName, PatternValues),
+              print_generated(NewFileName)
       end,
       Files).
 
@@ -28,14 +28,14 @@ file_tree(Path) ->
                                FullPathResult),
     lists:delete(conf(), ResultNoDir).
 
-update(File, Patterns) ->
+update(File, ProjectName, Patterns) ->
     lists:foreach(
       fun ({Variable, Value}) ->
               BValue = erlang:list_to_binary(Value),
-              render(File, Variable, BValue),
-              rename(File, Value)
+              render(File, Variable, BValue)
       end,
-      Patterns).
+      Patterns),
+    rename(File, ProjectName).
 
 render(File, Variable, Value) ->
     {ok, Content} = file:read_file(File),
@@ -44,7 +44,8 @@ render(File, Variable, Value) ->
 
 rename(FileName, Value) ->
     NewFilename = erlang:iolist_to_binary(re:replace(FileName, "name", Value)),
-    file:rename(FileName, NewFilename).
+    file:rename(FileName, NewFilename),
+    NewFilename.
 
 is_conf(Path) ->
     case re:run(Path, [".*", conf(), ".*"]) of

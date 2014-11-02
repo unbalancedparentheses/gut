@@ -69,7 +69,7 @@ new([ProvidedName, Path | _]) ->
 
             gut_readme:generate(Path, Name),
 
-            gut_compile:compile(Path, Values),
+            gut_compile:compile(Path, Name, Values),
             io:format("~nYour gut project was created successfully.~n")
     end,
     ok;
@@ -101,7 +101,7 @@ print_generator(#{name := GenName,
     ShortName = gut_suffix:short_name(GenName),
     ShortName2 = erlang:binary_to_list(ShortName),
     ShortNamePadded = string:left(ShortName2, Padding),
-  io:format("~s # ~s # ~s # ~p~n", [color:green(ShortNamePadded), Desc, User, Stars]).
+    io:format("~s # ~s # ~s # ~p~n", [color:green(ShortNamePadded), Desc, User, Stars]).
 
 erlangmk(_) ->
     Url = "https://raw.githubusercontent.com/"
@@ -117,24 +117,24 @@ escriptize([Name | _]) ->
     ok.
 
 update(_) ->
-  io:format("Updating generators..."),
-  gut_generators:update(),
-  io:format(" ~s~n", [color:green("done")]),
+    io:format("Updating generators..."),
+    gut_generators:update(),
+    io:format(" ~s~n", [color:green("done")]),
 
-  ScriptPath = escript:script_name(),
-  io:format("Updating gut binary in ~s...", [ScriptPath]),
-  Url = "https://raw.githubusercontent.com/"
-    "unbalancedparentheses/gut/master/bin/gut",
-  {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
-  file:write_file(ScriptPath, Content),
-  io:format(" ~s~n", [color:green("done")]),
-  ok.
+    ScriptPath = escript:script_name(),
+    io:format("Updating gut binary in ~s...", [ScriptPath]),
+    Url = "https://raw.githubusercontent.com/"
+        "unbalancedparentheses/gut/master/bin/gut",
+    {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
+    file:write_file(ScriptPath, Content),
+    io:format(" ~s~n", [color:green("done")]),
+    ok.
 
 'update.gens'(_) ->
-  io:format("Updating generators..."),
-  gut_generators:update(),
-  io:format(" ~s~n", [color:green("done")]),
-  ok.
+    io:format("Updating generators..."),
+    gut_generators:update(),
+    io:format(" ~s~n", [color:green("done")]),
+    ok.
 
 padding_size(List) ->
     lists:max(lists:map(fun (#{name := Name}) ->
