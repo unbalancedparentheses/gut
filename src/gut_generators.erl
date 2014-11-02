@@ -36,7 +36,7 @@ item_to_generator(Item) ->
   #{url => Url,
     name => Name,
     description => Description,
-    stars => Stars,
+    stars => erlang:integer_to_binary(Stars),
     user => User
    }.
 

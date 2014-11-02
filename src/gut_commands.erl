@@ -87,7 +87,19 @@ find([Name | _]) ->
   ok.
 
 print_generators(Generators) ->
-  Padding = padding_size(Generators),
+  ColNames = #{name => <<"name">>,
+               description => <<"description">>,
+               user => <<"user">>,
+               stars => <<"stars">>
+              },
+  Generators2 =  [ColNames| Generators],
+
+  Padding = padding_size(Generators2),
+
+  print_generator(ColNames, Padding),
+
+  io:format("~n"),
+
   lists:foreach(fun (X) ->
                     print_generator(X, Padding)
                 end,
@@ -97,11 +109,18 @@ print_generator(#{name := GenName,
                   description := Desc,
                   user := User,
                   stars := Stars
-                 }, Padding) ->
+                 },
+                [NamePadSize, DescPadSize, UserPadSize, StarsPadSize]) ->
   ShortName = gut_suffix:short_name(GenName),
   ShortName2 = erlang:binary_to_list(ShortName),
-  ShortNamePadded = string:left(ShortName2, Padding),
-  io:format("~s # ~s # ~s # ~p~n", [color:green(ShortNamePadded), Desc, User, Stars]).
+
+  ShortNamePadded = string:left(ShortName2, NamePadSize),
+  DescPadded = string:left(erlang:binary_to_list(Desc), DescPadSize),
+  UserPadded = string:left(erlang:binary_to_list(User), UserPadSize),
+  StarsPadded = string:right(erlang:binary_to_list(Stars), StarsPadSize),
+
+  io:format("~s ~s   ~s ~s~n",
+            [color:green(ShortNamePadded), DescPadded, UserPadded, StarsPadded]).
 
 erlangmk(_) ->
   Url = "https://raw.githubusercontent.com/"
@@ -137,7 +156,26 @@ update(_) ->
   ok.
 
 padding_size(List) ->
-  lists:max(lists:map(fun (#{name := Name}) ->
-                          ShortName = gut_suffix:short_name(Name),
-                          erlang:size(ShortName)
-                      end, List)).
+  SizeList = lists:foldl(fun (#{name := Name,
+                                description := Desc,
+                                user := User,
+                                stars := Stars
+                               }, [NameList, DescList, UserList, StarsList]) ->
+                             ShortName = gut_suffix:short_name(Name),
+
+                             NameSize =erlang:size(ShortName),
+                             DescSize =erlang:size(Desc),
+                             UserSize =erlang:size(User),
+                             StarsSize =erlang:size(Stars),
+
+                             NameList2 = [NameSize | NameList],
+                             DescList2 = [DescSize | DescList],
+                             UserList2 = [UserSize | UserList],
+                             StarsList2 = [StarsSize | StarsList],
+
+                             [NameList2, DescList2, UserList2, StarsList2]
+                         end, [[], [], [], []], List),
+
+  lists:map(fun(X) ->
+                lists:max(X)
+            end, SizeList).
