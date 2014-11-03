@@ -36,13 +36,15 @@ help() ->
      "update.gens" => #{desc => "Update all generators in the local ~/.gut folder",
                         long => ""
                        },
-     "help" => #{desc => "Print help information",
+     "help" => #{desc => "Prints help information",
                  long => ""
                 }
    }.
 
 version(_) ->
-  io:format("~s~n", [version()]),
+  Ascii = <<"                __\n   ____ ___  __/ /_\n  / __ `/ / / / __/\n / /_/ / /_/ / /_\n \\__, /\\__,_/\\__/\n/____/\n">>,
+  io:format(Ascii),
+  io:format("Version: ~s~n", [version()]),
   ok.
 
 version() ->
