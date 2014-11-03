@@ -6,7 +6,6 @@
          stop/1,
          main/1
         ]).
-
 %%% Exported functions
 start() ->
   {ok, _Started} = application:ensure_all_started(gut).

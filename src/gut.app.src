@@ -7,7 +7,8 @@
    [kernel,
     stdlib,
     ibrowse,
-    ssl
+    ssl,
+    yamerl
    ]},
   {modules, []},
   {mod, {gut, []}}

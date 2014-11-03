@@ -70,6 +70,8 @@ new([ProvidedName, Path | _]) ->
       gut_readme:generate(Path, Name),
 
       gut_compile:compile(Path, Name, Values),
+
+      gut_config:run(Path),
       io:format("~nYour gut project was created successfully.~n")
   end,
   ok;
@@ -87,18 +89,16 @@ find([Name | _]) ->
   ok.
 
 print_generators(Generators) ->
-  ColNames = #{name => <<"name">>,
-               description => <<"description">>,
-               user => <<"user">>,
-               stars => <<"stars">>
+  ColNames = #{name => <<"NAME">>,
+               description => <<"DESCRIPTION">>,
+               user => <<"USER">>,
+               stars => <<"STARS">>
               },
   Generators2 =  [ColNames| Generators],
 
   Padding = padding_size(Generators2),
 
   print_generator(ColNames, Padding),
-
-  io:format("~n"),
 
   lists:foreach(fun (X) ->
                     print_generator(X, Padding)
