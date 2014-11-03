@@ -19,6 +19,7 @@ start_link() ->
   gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 run(Command, WorkingDir) ->
+  io:format("~s ~s~n", [color:greenb("* running"), Command]),
   {Status, Msgs} = gen_server:call(?MODULE, {run, Command, WorkingDir}, 45000),
   case Status of
     0 ->

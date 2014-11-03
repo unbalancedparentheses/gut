@@ -56,5 +56,5 @@ is_conf(Path) ->
   end.
 
 print_generated(File) ->
-  io:format(color:green("* creating ")),
+  io:format(color:greenb("* creating ")),
   io:format("~s~n", [File]).
