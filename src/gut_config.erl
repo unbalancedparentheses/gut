@@ -1,6 +1,7 @@
 -module(gut_config).
 -export([
-         run/1
+         run/1,
+         get_yaml/1
         ]).
 
 config_name() ->
@@ -13,15 +14,19 @@ exists(Path) ->
 run(Path) ->
   case exists(Path) of
     true ->
-      #{"postinstall" := Commands} = get_yaml(Path),
+      #{"postinstall" := Postinstall} = get_yaml(Path),
+      #{"commands" := Commands, "message" := Message} = Postinstall,
       lists:map(fun (X) ->
                     gut_port:run(X, Path)
-                end, Commands);
+                end, Commands),
+      io:format("~n~s~n", [color:greenb(Message)]);
     false ->
       ok
   end.
 
 get_yaml(Path) ->
   FullPath = filename:join(Path, config_name()),
-  [[Mappings]] = yamerl_constr:file(FullPath),
-  maps:from_list(Mappings).
+  [Mappings] = yamerl_constr:file(FullPath),
+  Result = maps:from_list(Mappings),
+  #{"postinstall" := Postinstall} = Result,
+  Result#{"postinstall" := maps:from_list(Postinstall)}.
