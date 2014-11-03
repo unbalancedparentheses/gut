@@ -35,7 +35,7 @@ run(Name) ->
       %% Archive was successfully created. Prefix that with
       %% header and write to Name file
       Header = <<"#!/usr/bin/env escript\n%%! "
-                 "+Bc +K true -smp enable\n">>,
+                 "+K true -smp enable\n">>,
       Script = <<Header/binary, ZipBin/binary>>,
       case file:write_file(Target, Script) of
         ok -> ok;
