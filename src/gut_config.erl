@@ -14,19 +14,46 @@ exists(Path) ->
 run(Path) ->
   case exists(Path) of
     true ->
-      #{"postinstall" := Postinstall} = get_yaml(Path),
-      #{"commands" := Commands, "message" := Message} = Postinstall,
-      lists:map(fun (X) ->
-                    gut_port:run(X, Path)
-                end, Commands),
-      io:format("~n~s~n", [color:greenb(Message)]);
+      Yaml = get_yaml(Path),
+      postinstall(Yaml, Path);
     false ->
       ok
   end.
 
+postinstall(#{"postinstall" := Postinstall}, Path) ->
+  commands(Postinstall, Path),
+  message(Postinstall);
+postinstall(_, _) ->
+  ok.
+
+commands(#{"commands" := Commands}, Path) ->
+  lists:map(fun (X) ->
+                gut_port:run(X, Path)
+            end, Commands);
+commands(_, _ ) ->
+  ok.
+
+message(#{"message" := Message}) ->
+  io:format("~n~s~n", [color:greenb(Message)]);
+message(_) ->
+  ok.
+
 get_yaml(Path) ->
   FullPath = filename:join(Path, config_name()),
-  [Mappings] = yamerl_constr:file(FullPath),
+  case yamerl_constr:file(FullPath) of
+    [Mappings] ->
+      yaml_to_map(Mappings);
+    _ ->
+      ok
+  end.
+
+yaml_to_map(Mappings) ->
   Result = maps:from_list(Mappings),
-  #{"postinstall" := Postinstall} = Result,
-  Result#{"postinstall" := maps:from_list(Postinstall)}.
+
+  Postinstall = maps:get("postinstall", Result, undefined),
+  case Postinstall of
+    undefined ->
+      Result;
+    _ ->
+      Result#{"postinstall" := maps:from_list(Postinstall)}
+  end.
