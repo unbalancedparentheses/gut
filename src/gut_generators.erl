@@ -11,7 +11,10 @@
 
 -type generator() :: #{name => binary(),
                        url => binary(),
-                       description => binary()}.
+                       clone_url => binary(),
+                       description => binary(),
+                       stars => binary()
+                      }.
 
 %%% Exported
 
@@ -24,16 +27,17 @@ find(Page) ->
 
 -spec item_to_generator(map()) -> generator().
 item_to_generator(Item) ->
-  #{<<"clone_url">> := Url,
+  #{<<"clone_url">> := CloneUrl,
+    <<"url">> := Url,
     <<"name">> := Name,
     <<"description">> := Description,
     <<"stargazers_count">> := Stars,
     <<"owner">> := Owner
    } = Item,
-
   #{<<"login">> := User} = Owner,
 
   #{url => Url,
+    clone_url => CloneUrl,
     name => Name,
     description => Description,
     stars => erlang:integer_to_binary(Stars),
@@ -79,13 +83,13 @@ find_all(Page, Results) ->
   end.
 
 -spec clone(binary(), binary()) -> ok | {error, term}.
-clone(GenName, GenUrl) ->
+clone(GenName, GenCloneUrl) ->
   ensure_local_dir(),
   NameStr = binary_to_list(GenName),
   LocalDir = local_dir_path() ++ "/" ++ NameStr,
   case file_exists(LocalDir) of
     false ->
-      CloneCmd = io_lib:format("git clone ~s ~s", [GenUrl, LocalDir]),
+      CloneCmd = io_lib:format("git clone ~s ~s", [GenCloneUrl, LocalDir]),
       os:cmd(CloneCmd);
     true ->
       ok

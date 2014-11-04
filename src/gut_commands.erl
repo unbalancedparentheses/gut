@@ -42,7 +42,8 @@ help() ->
    }.
 
 version(_) ->
-  Ascii = <<"                __\n   ____ ___  __/ /_\n  / __ `/ / / / __/\n / /_/ / /_/ / /_\n \\__, /\\__,_/\\__/\n/____/\n">>,
+  Ascii =
+    <<"                __\n   ____ ___  __/ /_\n  / __ `/ / / / __/\n / /_/ / /_/ / /_\n \\__, /\\__,_/\\__/\n/____/\n">>,
   io:format(Ascii),
   io:format("Version: ~s~n", [version()]),
   ok.
@@ -62,8 +63,13 @@ new([ProvidedName, Path | _]) ->
     not_found ->
       io:format("Generator ~s not found ~n", [ProvidedName]);
     #{name := GenName,
-      url := GenUrl} ->
-      gut_generators:clone(GenName, GenUrl),
+      clone_url := GenCloneUrl,
+      url := Url
+     } ->
+      io:format("Cloning ~s hosted at ~s~n", [color:greenb(Name), color:greenb(Url)]),
+      io:format("Please submit a github issue if you find any problem~n~n"),
+
+      gut_generators:clone(GenName, GenCloneUrl),
       gut_generators:copy(GenName, Path),
 
       os:cmd("rm -rf " ++ Path ++ "/.git"),
@@ -140,7 +146,7 @@ escriptize([Name | _]) ->
 update(_) ->
   io:format("Updating generators..."),
   gut_generators:update(),
-  io:format(" ~s~n", [color:green("done")]),
+  io:format(" ~s~n", [color:greenb("done")]),
 
   ScriptPath = escript:script_name(),
   io:format("Updating gut binary in ~s...", [ScriptPath]),
@@ -148,13 +154,13 @@ update(_) ->
     "unbalancedparentheses/gut/master/bin/gut",
   {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
   file:write_file(ScriptPath, Content),
-  io:format(" ~s~n", [color:green("done")]),
+  io:format(" ~s~n", [color:greenb("done")]),
   ok.
 
 'update.gens'(_) ->
   io:format("Updating generators..."),
   gut_generators:update(),
-  io:format(" ~s~n", [color:green("done")]),
+  io:format(" ~s~n", [color:greenb("done")]),
   ok.
 
 padding_size(List) ->
