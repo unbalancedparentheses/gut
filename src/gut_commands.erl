@@ -7,8 +7,7 @@
          find/1,
          erlangmk/1,
          escriptize/1,
-         update/1,
-         'update.gens'/1
+         update/1
         ]).
 
 %% Commands
@@ -33,9 +32,6 @@ help() ->
      "update" => #{desc => "Get the latest version of the gut executable and update.gens",
                    long => ""
                   },
-     "update.gens" => #{desc => "Update all generators in the local ~/.gut folder",
-                        long => ""
-                       },
      "help" => #{desc => "Prints help information",
                  long => ""
                 }
@@ -154,12 +150,6 @@ update(_) ->
     "unbalancedparentheses/gut/master/bin/gut",
   {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
   file:write_file(ScriptPath, Content),
-  io:format(" ~s~n", [color:greenb("done")]),
-  ok.
-
-'update.gens'(_) ->
-  io:format("Updating generators..."),
-  gut_generators:update(),
   io:format(" ~s~n", [color:greenb("done")]),
   ok.
 
