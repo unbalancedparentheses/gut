@@ -40,7 +40,7 @@ message(_) ->
 
 get_yaml(Path) ->
   FullPath = filename:join(Path, config_name()),
-  case yamerl_constr:file(FullPath) of
+  case read_yaml(FullPath) of
     [Mappings] ->
       yaml_to_map(Mappings);
     _ ->
@@ -56,4 +56,12 @@ yaml_to_map(Mappings) ->
       Result;
     _ ->
       Result#{"postinstall" := maps:from_list(Postinstall)}
+  end.
+
+read_yaml(Path) ->
+  try
+    yamerl_constr:file(Path)
+  catch
+    _:{yamerl_exception, [{_, _, Message, _, _, _, _, _}]} ->
+      throw({error, Message})
   end.
