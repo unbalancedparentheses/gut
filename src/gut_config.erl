@@ -27,11 +27,38 @@ postinstall(_, _) ->
   ok.
 
 commands(#{"commands" := Commands}, Path) ->
-  lists:map(fun (X) ->
-                gut_port:run(X, Path)
-            end, Commands);
+  case comfirm_commands(Commands) of
+    true ->
+      run_comands(Commands, Path);
+    false ->
+      ok
+  end;
 commands(_, _ ) ->
   ok.
+
+comfirm_commands(Commands) ->
+  io:format("~nThe generator wants to run the following list of commands:~n"),
+  lists:foldl(fun (X, Acc) ->
+                  io:format("~p. ~s~n", [Acc, X]),
+                  Acc + 1
+              end, 1, Commands),
+  loop_read().
+
+loop_read() ->
+  Result = io:fread("Are you sure you want to continue: [y/n] ", "~c"),
+  case Result of
+    {ok, ["y"]} ->
+      true;
+    {ok, _} ->
+      false;
+    _ ->
+      loop_read()
+  end.
+
+run_comands(Commands, Path) ->
+  lists:map(fun (X) ->
+                gut_port:run(X, Path)
+            end, Commands).
 
 message(#{"message" := Message}) ->
   io:format("~n~s~n", [color:greenb(Message)]);
