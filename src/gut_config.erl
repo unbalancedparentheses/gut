@@ -63,5 +63,5 @@ read_yaml(Path) ->
     yamerl_constr:file(Path)
   catch
     _:{yamerl_exception, [{_, _, Message, _, _, _, _, _}]} ->
-      throw({error, Message})
+      throw({error, "YAML error: " ++ Message})
   end.
