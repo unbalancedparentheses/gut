@@ -15,10 +15,15 @@ run(Path) ->
   case exists(Path) of
     true ->
       Yaml = get_yaml(Path),
-      postinstall(Yaml, Path);
+      postinstall(Yaml, Path),
+      cleanup(Path),
+      Yaml;
     false ->
-      ok
+      #{"cwd" => true}
   end.
+
+cleanup(Path) ->
+  os:cmd("rm -rf " ++ filename:join(Path, config_name())).
 
 postinstall(#{"postinstall" := Postinstall}, Path) ->
   commands(Postinstall, Path),
@@ -37,7 +42,7 @@ commands(_, _ ) ->
   ok.
 
 comfirm_commands(Commands) ->
-  io:format("~nThe generator wants to run the following list of commands:~n"),
+  io:format("The generator wants to run the following list of commands:~n"),
   lists:foldl(fun (X, Acc) ->
                   io:format("~p. ~s~n", [Acc, X]),
                   Acc + 1
@@ -78,11 +83,22 @@ yaml_to_map(Mappings) ->
   Result = maps:from_list(Mappings),
 
   Postinstall = maps:get("postinstall", Result, undefined),
+
+  Cwd = case maps:get("cwd", Result, false) of
+          true ->
+            true;
+          _ ->
+            false
+        end,
+
   case Postinstall of
     undefined ->
       Result;
     _ ->
-      Result#{"postinstall" := maps:from_list(Postinstall)}
+      Result#{"postinstall" := maps:from_list(Postinstall),
+              "cwd" =>
+                Cwd
+             }
   end.
 
 read_yaml(Path) ->

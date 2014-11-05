@@ -58,24 +58,25 @@ new([ProvidedName, Path | _]) ->
   case Generator of
     not_found ->
       io:format("Generator ~s not found ~n", [ProvidedName]);
-    #{name := GenName,
-      clone_url := GenCloneUrl,
+    #{clone_url := GenCloneUrl,
       url := Url
      } ->
-      io:format("Cloning ~s hosted at ~s~n", [color:greenb(GenName), color:greenb(Url)]),
+      io:format("Cloning ~s hosted at ~s~n", [color:greenb(ProvidedName), color:greenb(Url)]),
       io:format("Please submit a github issue if you find any problem~n~n"),
 
-      gut_generators:clone(GenName, GenCloneUrl),
-      gut_generators:copy(GenName, Path),
+      gut_generators:clone(FullGeneratorName, GenCloneUrl),
+      CompiledPath = gut_compile:compile(FullGeneratorName, Name, Values),
+      #{"cwd" := Cwd} = gut_config:run(CompiledPath),
 
-      os:cmd("rm -rf " ++ Path ++ "/.git"),
-      os:cmd("rm -rf " ++ Path ++ "/README.md"),
+      Destination = case Cwd of
+                      true ->
+                        filename:dirname(filename:absname(Path));
+                      false->
+                        Path
+                    end,
 
-      gut_readme:generate(Path, Name),
+      gut_generators:copy(CompiledPath, Destination),
 
-      gut_compile:compile(Path, Name, Values),
-
-      gut_config:run(Path),
       io:format("~nYour gut project was created successfully.~n")
   end,
   ok;

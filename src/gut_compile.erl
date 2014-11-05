@@ -6,14 +6,30 @@
 conf() ->
   "gut.conf".
 
-compile(Path, ProjectName, PatternValues) ->
-  Files = file_tree(Path),
+compile(FullGeneratorName, Name, PatternValues) ->
+  Home = os:getenv("HOME") ++ "/.gut",
+
+  os:cmd("rm -rf " ++ filename:join(Home, "compiled")),
+
+  Path = filename:join(Home, FullGeneratorName),
+
+  Destination = filename:join([Home, "compiled", Name]),
+  filelib:ensure_dir(Destination),
+
+  CopyCmd = io_lib:format("cp -a ~s ~s", [Path, Destination]),
+  os:cmd(CopyCmd),
+
+  gut_readme:generate(Destination, Name),
+
+  os:cmd("rm -rf " ++ Destination ++ "/.git"),
+
+  Files = file_tree(Destination),
   lists:foreach(
     fun (File) ->
-        NewFileName = update(File, ProjectName, PatternValues),
-        print_generated(NewFileName)
+        update(File, Name, PatternValues)
     end,
-    Files).
+    Files),
+  Destination.
 
 file_tree(Path) ->
   Result = filelib:wildcard("**/*", Path),
@@ -54,7 +70,3 @@ is_conf(Path) ->
     _ ->
       true
   end.
-
-print_generated(File) ->
-  io:format(color:greenb("* creating ")),
-  io:format("~s~n", [File]).

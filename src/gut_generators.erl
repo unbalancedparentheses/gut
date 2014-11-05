@@ -85,8 +85,7 @@ find_all(Page, Results) ->
 -spec clone(binary(), binary()) -> ok | {error, term}.
 clone(GenName, GenCloneUrl) ->
   ensure_local_dir(),
-  NameStr = binary_to_list(GenName),
-  LocalDir = local_dir_path() ++ "/" ++ NameStr,
+  LocalDir = local_dir_path() ++ "/" ++ GenName,
   case file_exists(LocalDir) of
     false ->
       CloneCmd = io_lib:format("git clone ~s ~s", [GenCloneUrl, LocalDir]),
@@ -96,18 +95,22 @@ clone(GenName, GenCloneUrl) ->
   end.
 
 -spec copy(binary(), string()) -> ok.
-copy(GenName, Destination) ->
-  NameStr = binary_to_list(GenName),
-  LocalDir = local_dir_path() ++ "/" ++ NameStr,
-  case file_exists(Destination) of
-    false ->
-      filelib:ensure_dir(Destination),
-      CopyCmd = io_lib:format("cp -a ~s ~s", [LocalDir, Destination]),
-      os:cmd(CopyCmd);
-    true ->
-      Message = "Folder " ++ Destination ++ " is already present",
-      throw({error, Message})
-  end.
+copy(Path, Destination) ->
+  Files = filelib:wildcard("**/*", Path),
+
+  lists:foreach(fun(File) ->
+                    SourceFile = filename:join([Path, File]),
+                    DestFile = filename:join([Destination, File]),
+                    ok = filelib:ensure_dir(DestFile),
+
+                    case filelib:is_regular(SourceFile) of
+                      true ->
+                        {ok, _} = file:copy(SourceFile, DestFile),
+                        print_generated(DestFile);
+                      false ->
+                        ok
+                    end
+                end, Files).
 
 -spec update() -> ok.
 update() ->
@@ -146,7 +149,7 @@ github_search(Query, Page) ->
   end.
 
 %% @doc Takes all results from the github search
-%%      and keeps only the ones with the suffix.
+%%      and keeps only the ones with the suffx.
 -spec filter([generator()]) -> [generator()].
 filter(List) ->
   lists:filter(fun (#{name := Name}) ->
@@ -161,3 +164,7 @@ sort_by_stars(List) ->
 
 file_exists(Path) ->
   [] /= filelib:wildcard(Path).
+
+print_generated(File) ->
+  io:format(color:greenb("* creating ")),
+  io:format("~s~n", [File]).
