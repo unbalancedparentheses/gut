@@ -65,8 +65,10 @@ new([ProvidedName, Path | _]) ->
       io:format("Please submit a github issue if you find any problem~n~n"),
 
       gut_generators:clone(FullGeneratorName, GenCloneUrl),
+
       CompiledPath = gut_compile:compile(FullGeneratorName, Name, Values),
-      #{"cwd" := Cwd} = gut_config:run(CompiledPath),
+
+      Cwd = gut_config:run(CompiledPath),
 
       Destination = case Cwd of
                       true ->

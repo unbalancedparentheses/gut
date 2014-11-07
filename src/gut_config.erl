@@ -16,14 +16,23 @@ run(Path) ->
     true ->
       Yaml = get_yaml(Path),
       postinstall(Yaml, Path),
-      cleanup(Path),
-      Yaml;
+
+      #{"cwd" := Cwd} = Yaml,
+      cleanup(Path, Cwd),
+      Cwd;
     false ->
-      #{"cwd" => true}
+      false
   end.
 
-cleanup(Path) ->
-  os:cmd("rm -rf " ++ filename:join(Path, config_name())).
+cleanup(Path, Cwd) ->
+  os:cmd("rm -rf " ++ filename:join(Path, config_name())),
+
+  case Cwd of
+    true ->
+      os:cmd("rm -rf " ++ filename:join(Path, "README.md"));
+    false ->
+      ok
+  end.
 
 postinstall(#{"postinstall" := Postinstall}, Path) ->
   commands(Postinstall, Path),
