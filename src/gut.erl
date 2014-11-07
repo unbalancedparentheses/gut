@@ -4,7 +4,8 @@
          start/2,
          stop/0,
          stop/1,
-         main/1
+         main/1,
+         home/0
         ]).
 %%% Exported functions
 start() ->
@@ -26,6 +27,9 @@ main(Args) ->
   thorerl:parse(gut_commands,
                 Args,
                 "https://github.com/unbalancedparentheses/gut/issues/new").
+
+home() ->
+  os:getenv("HOME") ++ "/.gut".
 
 %% internal
 needed_executables() ->

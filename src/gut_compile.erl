@@ -7,20 +7,9 @@ conf() ->
   "gut.conf".
 
 compile(FullGeneratorName, Name, PatternValues) ->
-  Home = os:getenv("HOME") ++ "/.gut",
-
-  os:cmd("rm -rf " ++ filename:join(Home, "compiled")),
-
-  Path = filename:join(Home, FullGeneratorName),
-
-  Destination = filename:join([Home, "compiled", Name]),
-  filelib:ensure_dir(Destination),
-
-  CopyCmd = io_lib:format("cp -a ~s ~s", [Path, Destination]),
-  os:cmd(CopyCmd),
+  Destination = copy_to_compiled(FullGeneratorName, Name),
 
   gut_readme:generate(Destination, Name),
-
   os:cmd("rm -rf " ++ Destination ++ "/.git"),
 
   Files = file_tree(Destination),
@@ -29,6 +18,19 @@ compile(FullGeneratorName, Name, PatternValues) ->
         update(File, Name, PatternValues)
     end,
     Files),
+  Destination.
+
+copy_to_compiled(FullGeneratorName, Name) ->
+  Home = gut:home(),
+
+  os:cmd("rm -rf " ++ filename:join(Home, "compiled")),
+
+  Destination = filename:join([Home, "compiled", Name]),
+  filelib:ensure_dir(Destination),
+
+  Source = filename:join(Home, FullGeneratorName),
+  CopyCmd = io_lib:format("cp -a ~s ~s", [Source, Destination]),
+  os:cmd(CopyCmd),
   Destination.
 
 file_tree(Path) ->

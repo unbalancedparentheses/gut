@@ -1,6 +1,6 @@
 -module(gut_config).
 -export([
-         run/1,
+         run/2,
          get_yaml/1
         ]).
 
@@ -11,17 +11,17 @@ exists(Path) ->
   FullPath = filename:join(Path, config_name()),
   filelib:is_file(FullPath).
 
-run(Path) ->
-  case exists(Path) of
+run(CompiledPath, DesiredPath) ->
+  case exists(CompiledPath) of
     true ->
-      Yaml = get_yaml(Path),
-      postinstall(Yaml, Path),
+      Yaml = get_yaml(CompiledPath),
+      postinstall(Yaml, CompiledPath),
 
       #{"cwd" := Cwd} = Yaml,
-      cleanup(Path, Cwd),
-      Cwd;
+      cleanup(CompiledPath, Cwd),
+      final_path(DesiredPath, Cwd);
     false ->
-      false
+      final_path(DesiredPath, false)
   end.
 
 cleanup(Path, Cwd) ->
@@ -32,6 +32,14 @@ cleanup(Path, Cwd) ->
       os:cmd("rm -rf " ++ filename:join(Path, "README.md"));
     false ->
       ok
+  end.
+
+final_path(DesiredPath, Cwd) ->
+  case Cwd of
+    true ->
+      filename:dirname(filename:absname(DesiredPath));
+    false->
+      DesiredPath
   end.
 
 postinstall(#{"postinstall" := Postinstall}, Path) ->

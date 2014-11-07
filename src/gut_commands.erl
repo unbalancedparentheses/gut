@@ -48,10 +48,10 @@ version() ->
   {ok, Keys} = application:get_all_key(gut),
   proplists:get_value(vsn, Keys).
 
-new([ProvidedName, Path | _]) ->
+new([ProvidedName, DesiredPath | _]) ->
   FullGeneratorName = gut_suffix:full_name(ProvidedName),
 
-  Name = filename:basename(Path),
+  Name = filename:basename(DesiredPath),
   Values = [{<<"{{NAME}}">>, Name}],
 
   Generator = gut_generators:find_by_name(FullGeneratorName),
@@ -68,16 +68,9 @@ new([ProvidedName, Path | _]) ->
 
       CompiledPath = gut_compile:compile(FullGeneratorName, Name, Values),
 
-      Cwd = gut_config:run(CompiledPath),
+      FinalPath = gut_config:run(CompiledPath, DesiredPath),
 
-      Destination = case Cwd of
-                      true ->
-                        filename:dirname(filename:absname(Path));
-                      false->
-                        Path
-                    end,
-
-      gut_generators:copy(CompiledPath, Destination),
+      gut_generators:copy(CompiledPath, FinalPath),
 
       io:format("~nYour gut project was created successfully.~n")
   end,
