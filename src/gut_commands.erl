@@ -20,7 +20,7 @@ help() ->
      "new" => #{desc => "Creates a new project or file",
                 long => ""
                },
-     "find" => #{desc => "Find available generators and templates",
+     "find" => #{desc => "Find available generators",
                  long => ""
                 },
      "erlangmk" => #{desc => "Downloads erlang.mk",
@@ -83,10 +83,10 @@ new([ProvidedName, Path | _]) ->
   end,
   ok;
 new(_) ->
-  throw({error, "Missing generator/template name"}).
+  throw({error, "Missing generator name"}).
 
 find([]) ->
-  io:format("Fetching list of generators and templates from github...~n"),
+  io:format("Fetching list of generators from github...~n"),
   Generators = gut_generators:find_all(),
   print_generators(Generators),
   ok;
