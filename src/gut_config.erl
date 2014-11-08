@@ -19,9 +19,9 @@ run(CompiledPath, DesiredPath) ->
 
       #{"cwd" := Cwd} = Yaml,
       cleanup(CompiledPath, Cwd),
-      final_path(DesiredPath, Cwd);
+      gut_path:final_path(DesiredPath, Cwd);
     false ->
-      final_path(DesiredPath, false)
+      gut_path:final_path(DesiredPath, false)
   end.
 
 cleanup(Path, Cwd) ->
@@ -32,14 +32,6 @@ cleanup(Path, Cwd) ->
       os:cmd("rm -rf " ++ filename:join(Path, "README.md"));
     false ->
       ok
-  end.
-
-final_path(DesiredPath, Cwd) ->
-  case Cwd of
-    true ->
-      filename:dirname(filename:absname(DesiredPath));
-    false->
-      DesiredPath
   end.
 
 postinstall(#{"postinstall" := Postinstall}, Path) ->

@@ -3,16 +3,13 @@
          compile/3
         ]).
 
-conf() ->
-  "gut.conf".
-
 compile(FullGeneratorName, Name, PatternValues) ->
   Destination = copy_to_compiled(FullGeneratorName, Name),
 
   gut_readme:generate(Destination, Name),
   os:cmd("rm -rf " ++ Destination ++ "/.git"),
 
-  Files = file_tree(Destination),
+  Files = gut_path:file_tree(Destination, full_path),
   lists:foreach(
     fun (File) ->
         update(File, Name, PatternValues)
@@ -21,7 +18,7 @@ compile(FullGeneratorName, Name, PatternValues) ->
   Destination.
 
 copy_to_compiled(FullGeneratorName, Name) ->
-  Home = gut:home(),
+  Home = gut_path:home(),
 
   os:cmd("rm -rf " ++ filename:join(Home, "compiled")),
 
@@ -32,19 +29,6 @@ copy_to_compiled(FullGeneratorName, Name) ->
   CopyCmd = io_lib:format("cp -a ~s ~s", [Source, Destination]),
   os:cmd(CopyCmd),
   Destination.
-
-file_tree(Path) ->
-  Result = filelib:wildcard("**/*", Path),
-  FullPathResult = lists:map(fun (File) ->
-                                 filename:join(Path, File)
-                             end,
-                             Result),
-  ResultNoDir = lists:filter(fun (X) ->
-                                 (not filelib:is_dir(X))
-                                   and not is_conf(X)
-                             end,
-                             FullPathResult),
-  lists:delete(conf(), ResultNoDir).
 
 update(File, ProjectName, Patterns) ->
   lists:foreach(
@@ -64,11 +48,3 @@ rename(FileName, Value) ->
   NewFilename = erlang:iolist_to_binary(re:replace(FileName, "name", Value)),
   file:rename(FileName, NewFilename),
   NewFilename.
-
-is_conf(Path) ->
-  case re:run(Path, [".*", conf(), ".*"]) of
-    nomatch ->
-      false;
-    _ ->
-      true
-  end.

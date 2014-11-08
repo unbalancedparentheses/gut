@@ -84,8 +84,7 @@ find_all(Page, Results) ->
 
 -spec clone(binary(), binary()) -> ok | {error, term}.
 clone(GenName, GenCloneUrl) ->
-  ensure_local_dir(),
-  LocalDir = local_dir_path() ++ "/" ++ GenName,
+  LocalDir = filename:join(gut_path:home(), GenName),
   case file_exists(LocalDir) of
     false ->
       CloneCmd = io_lib:format("git clone ~s ~s", [GenCloneUrl, LocalDir]),
@@ -96,25 +95,20 @@ clone(GenName, GenCloneUrl) ->
 
 -spec copy(binary(), string()) -> ok.
 copy(Path, Destination) ->
-  Files = filelib:wildcard("**/*", Path),
+  Files = gut_path:file_tree(Path),
 
   lists:foreach(fun(File) ->
-                    SourceFile = filename:join([Path, File]),
-                    DestFile = filename:join([Destination, File]),
-                    ok = filelib:ensure_dir(DestFile),
+                    SourceFile = filename:join(Path, File),
+                    DestFile = filename:join(Destination, File),
 
-                    case filelib:is_regular(SourceFile) of
-                      true ->
-                        {ok, _} = file:copy(SourceFile, DestFile),
-                        print_generated(DestFile);
-                      false ->
-                        ok
-                    end
+                    ok = filelib:ensure_dir(DestFile),
+                    {ok, _} = file:copy(SourceFile, DestFile),
+                    print_generated(File)
                 end, Files).
 
 -spec update() -> ok.
 update() ->
-  GeneratorsDirs = filelib:wildcard(local_dir_path() ++ "/*"),
+  GeneratorsDirs = filelib:wildcard(gut_path:home() ++ "/*"),
   PullFun = fun(DirPath) ->
                 file:set_cwd(DirPath),
                 os:cmd("git reset --hard HEAD"),
@@ -123,16 +117,7 @@ update() ->
             end,
   lists:foreach(PullFun, GeneratorsDirs).
 
-%%% Internal
-
-ensure_local_dir() ->
-  LocalPath = local_dir_path(),
-  ok = filelib:ensure_dir(LocalPath),
-  file:make_dir(LocalPath).
-
-local_dir_path() ->
-  os:getenv("HOME") ++ "/.gut".
-
+%% internal
 -spec github_search(string(), integer()) -> {ok, binary()} | {error, term()}.
 github_search(Query, Page) ->
   QueryUrl = "https://api.github.com/search/repositories?q=~s&page=~p",
