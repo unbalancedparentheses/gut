@@ -65,6 +65,17 @@ Run `make app shell` to launch the application.
 * creating src/name_protocol.erl
 
 The job is done, boss.
+> tree name/
+name/
+├── Makefile
+├── README.md
+├── erlang.mk
+├── rel
+│   └── sys.config
+└── src
+    ├── name.app.src
+    ├── name.erl
+    └── name_protocol.erl
 ```
 
 ##heapster
