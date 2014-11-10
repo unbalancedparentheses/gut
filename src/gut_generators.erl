@@ -102,8 +102,7 @@ copy(Path, Destination) ->
                     DestFile = filename:join(Destination, File),
 
                     ok = filelib:ensure_dir(DestFile),
-                    {ok, _} = file:copy(SourceFile, DestFile),
-                    print_generated(File)
+                    {ok, _} = file:copy(SourceFile, DestFile)
                 end, Files).
 
 -spec update() -> ok.
@@ -156,7 +155,3 @@ sort_by_stars(List) ->
 
 file_exists(Path) ->
   [] /= filelib:wildcard(Path).
-
-print_generated(File) ->
-  io:format(color:greenb("* creating ")),
-  io:format("~s~n", [File]).

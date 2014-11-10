@@ -9,12 +9,15 @@ compile(FullGeneratorName, Name, PatternValues) ->
   gut_readme:generate(Destination, Name),
   gut_cleanup:git(Destination),
 
-  Files = gut_path:file_tree(Destination, full_path),
+  Files = gut_path:file_tree(Destination),
   lists:foreach(
     fun (File) ->
-        update(File, Name, PatternValues)
+        FileFullPath = filename:join(Destination, File),
+        update(FileFullPath, Name, PatternValues),
+        print_generated(Name, File)
     end,
     Files),
+  io:format("~n"),
   Destination.
 
 copy_to_compiled(FullGeneratorName, Name) ->
@@ -48,3 +51,7 @@ rename(FileName, Value) ->
   NewFilename = erlang:iolist_to_binary(re:replace(FileName, "name", Value)),
   file:rename(FileName, NewFilename),
   NewFilename.
+
+print_generated(Name, File) ->
+  io:format(color:greenb("* creating ")),
+  io:format("~s/~s~n", [Name, File]).
