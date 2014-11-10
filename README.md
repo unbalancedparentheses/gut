@@ -4,8 +4,11 @@ gutenberg: gut is good!
 
 Gutenberg is a massive template printing, aka scaffolding, tool for Erlang. Like rails generate or yeoman but for Erlang. Gutenberg was highly inspired by [lfetool](https://github.com/lfe/lfetool).
 
-#roadmap
+#CAUTION
 
+Erlang 17 or superior is needed. HOWEVER due to an SSL bug in 17.3, 17.3 is not supported. Please update to 17.4 or downgrade to a previous 17 version.
+
+#roadmap
 - Present - v0.8: Basic functionality
 - 12 November - v0.9: Better logs
 - 15 November - v1.0: Support many variables in generators. Better documentation for example on how to create your own generators. Odds and ends.
