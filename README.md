@@ -54,8 +54,9 @@ genevent              gen_event file generator                  jfacorro        
 cowboy-crud-json      Cowboy CRUD JSON handler                  igaray                    0
 ```
 
+This downloads the ranch generator and instantiates it with the provided name (the name is stalin in this case):
 ```bash
-> gut new ranch name
+> gut new ranch stalin
 Cloning ranch hosted at https://github.com/unbalancedparentheses/ranch-gutenberg-generator
 Please submit a github issue if you find any problem
 
@@ -71,22 +72,22 @@ Run `make app shell` to launch the application.
 * creating README.md
 * creating erlang.mk
 * creating rel/sys.config
-* creating src/name.app.src
-* creating src/name.erl
-* creating src/name_protocol.erl
+* creating src/stalin.app.src
+* creating src/stalin.erl
+* creating src/stalin_protocol.erl
 
 The job is done, boss.
-> tree name/
-name/
+> tree stalin/
+stalin/
 ├── Makefile
 ├── README.md
 ├── erlang.mk
 ├── rel
 │   └── sys.config
 └── src
-    ├── name.app.src
-    ├── name.erl
-    └── name_protocol.erl
+    ├── stalin.app.src
+    ├── stalin.erl
+    └── stalin_protocol.erl
 ```
 
 ##heapster
