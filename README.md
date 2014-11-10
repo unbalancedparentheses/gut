@@ -6,9 +6,9 @@ Gutenberg is a massive template printing, aka scaffolding, tool for Erlang. Like
 
 #roadmap
 
-Present - v0.8: Basic functionality
-12 November - v0.9: Better logs
-15 November - v1.0: Support many variables in generators. Odds and ends.
+- Present - v0.8: Basic functionality
+- 12 November - v0.9: Better logs
+- 15 November - v1.0: Support many variables in generators. Odds and ends.
 
 #tl;dr. install
 
