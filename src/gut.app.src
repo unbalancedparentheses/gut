@@ -2,7 +2,7 @@
  [
   {description,
    "Gutenberg"},
-  {vsn, "0.4.1"},
+  {vsn, "0.4.2"},
   {applications,
    [kernel,
     stdlib,
