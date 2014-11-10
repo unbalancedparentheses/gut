@@ -28,7 +28,7 @@ find(Page) ->
 -spec item_to_generator(map()) -> generator().
 item_to_generator(Item) ->
   #{<<"clone_url">> := CloneUrl,
-    <<"url">> := Url,
+    <<"html_url">> := Url,
     <<"name">> := Name,
     <<"description">> := Description,
     <<"stargazers_count">> := Stars,
