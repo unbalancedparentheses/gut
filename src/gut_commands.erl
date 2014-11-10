@@ -5,7 +5,6 @@
          version/1,
          new/1,
          find/1,
-         erlangmk/1,
          escriptize/1,
          update/1
         ]).
@@ -23,9 +22,6 @@ help() ->
      "find" => #{desc => "Find available generators",
                  long => ""
                 },
-     "erlangmk" => #{desc => "Downloads erlang.mk",
-                     long => ""
-                    },
      "escriptize" => #{desc => "Turn your erlang application into an escript",
                        long => ""
                       },
@@ -121,12 +117,6 @@ print_generator(#{name := GenName,
 
   io:format("~s ~s   ~s ~s~n",
             [color:green(ShortNamePadded), DescPadded, UserPadded, StarsPadded]).
-
-erlangmk(_) ->
-  Url = "https://raw.githubusercontent.com/"
-    "ninenines/erlang.mk/master/erlang.mk",
-  {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
-  file:write_file("erlang.mk", Content).
 
 escriptize([]) ->
   gut_escriptize:run(),
