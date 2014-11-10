@@ -1,14 +1,15 @@
 -module(gut_config).
 -export([
+         name/0,
          run/2,
          get_yaml/1
         ]).
 
-config_name() ->
+name() ->
   "gut.yaml".
 
 exists(Path) ->
-  FullPath = filename:join(Path, config_name()),
+  FullPath = filename:join(Path, name()),
   filelib:is_file(FullPath).
 
 run(CompiledPath, DesiredPath) ->
@@ -25,11 +26,13 @@ run(CompiledPath, DesiredPath) ->
   end.
 
 cleanup(Path, Cwd) ->
-  os:cmd("rm -rf " ++ filename:join(Path, config_name())),
+  gut_cleanup:config(Path),
 
   case Cwd of
     true ->
-      os:cmd("rm -rf " ++ filename:join(Path, "README.md"));
+      gut_cleanup:readme(Path),
+      gut_cleanup:license(Path),
+      gut_cleanup:gitignore(Path);
     false ->
       ok
   end.
@@ -80,7 +83,7 @@ message(_) ->
   ok.
 
 get_yaml(Path) ->
-  FullPath = filename:join(Path, config_name()),
+  FullPath = filename:join(Path, name()),
   case read_yaml(FullPath) of
     [Mappings] ->
       yaml_to_map(Mappings);

@@ -7,7 +7,7 @@ compile(FullGeneratorName, Name, PatternValues) ->
   Destination = copy_to_compiled(FullGeneratorName, Name),
 
   gut_readme:generate(Destination, Name),
-  os:cmd("rm -rf " ++ Destination ++ "/.git"),
+  gut_cleanup:git(Destination),
 
   Files = gut_path:file_tree(Destination, full_path),
   lists:foreach(
@@ -20,7 +20,7 @@ compile(FullGeneratorName, Name, PatternValues) ->
 copy_to_compiled(FullGeneratorName, Name) ->
   Home = gut_path:home(),
 
-  os:cmd("rm -rf " ++ filename:join(Home, "compiled")),
+  gut_cleanup:compiled(),
 
   Destination = filename:join([Home, "compiled", Name]),
   filelib:ensure_dir(Destination),
