@@ -54,6 +54,7 @@ Are you sure you want to continue: [y/n] n
 
 Message from generator:
 Run `make app shell` to launch the application.
+
 * creating .gitignore
 * creating Makefile
 * creating README.md
