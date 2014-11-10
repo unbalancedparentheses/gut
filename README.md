@@ -6,7 +6,7 @@ Gutenberg is a massive template printing, aka scaffolding, tool for Erlang. Like
 
 #CAUTION
 
-Erlang 17 or superior is needed. HOWEVER due to an SSL bug in 17.3, 17.3 is not supported. Please update to 17.4 or downgrade to a previous 17 version.
+Erlang 17 or superior is needed. HOWEVER due to an SSL bug in 17.3, 17.3 is not supported. Please update to 17.3 rev2 from [erlang solutions](https://www.erlang-solutions.com/downloads/download-erlang-otp) or downgrade to a previous 17 version.
 
 #roadmap
 - Present - v0.8: Basic functionality
