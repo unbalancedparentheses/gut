@@ -23,6 +23,17 @@ sudo mv ./gut /usr/local/bin/
 #RTFM
 
 ```bash
+> gut help
+escriptize # Turn your erlang application into an escript
+find       # Find available generators
+help       # Prints help information
+implode    # Removes gut and all its associated files
+new        # Creates a new project or file
+update     # Get the latest version of the gut executable and update.gens
+version    # Prints gutenberg version
+```
+
+```bash
 > gut find
 Fetching list of generators from github...
 NAME                  DESCRIPTION                               USER                  STARS
