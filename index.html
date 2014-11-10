@@ -34,7 +34,8 @@
         <h1>
 <a id="gutenberg-gut-is-good" class="anchor" href="#gutenberg-gut-is-good" aria-hidden="true"><span class="octicon octicon-link"></span></a>gutenberg: gut is good!</h1>
 
-<p>Gutenberg is a massive template printing, aka scaffolding, tool for Erlang. Like rails generate or yeoman but for Erlang. Gutenberg was highly inspired by <a href="https://github.com/lfe/lfetool">lfetool</a>.</p>
+<p>Gutenberg is a massive template printing, aka scaffolding, tool for Erlang. Like rails generate or yeoman.
+Gutenberg was highly inspired by <a href="https://github.com/lfe/lfetool">lfetool</a>.</p>
 
 <h1>
 <a id="caution" class="anchor" href="#caution" aria-hidden="true"><span class="octicon octicon-link"></span></a>CAUTION</h1>
@@ -44,10 +45,12 @@
 <h1>
 <a id="roadmap" class="anchor" href="#roadmap" aria-hidden="true"><span class="octicon octicon-link"></span></a>roadmap</h1>
 
+<p>Version 1 will be released this week after I get some input and comments from the community. Please test it and let me know what you think! Obviously this tool is meant for erlang newcomers or people like me that like the tools available in the nodejs, clojure, ruby and python communities.</p>
+
 <ul>
 <li>Present - v0.8: Basic functionality</li>
 <li>12 November - v0.9: Better logs</li>
-<li>15 November - v1.0: Support many variables in generators. Better documentation for example on how to create your own generators. Odds and ends.</li>
+<li>15 November - v1.0: Support many variables in generators. Better documentation for example on how to create your own generators. Odds and ends</li>
 </ul>
 
 <h1>
@@ -69,6 +72,8 @@ sudo mv ./gut /usr/local/bin/</pre></div>
 
 <h1>
 <a id="rtfm" class="anchor" href="#rtfm" aria-hidden="true"><span class="octicon octicon-link"></span></a>RTFM</h1>
+
+<p>The generators are searched and downloaded from github (like yeoman) so that anybody can create a generator and use it with gut</p>
 
 <div class="highlight highlight-bash"><pre><span class="o">&gt;</span> gut <span class="nf">help</span>
 escriptize <span class="c1"># Turn your erlang application into an escript</span>
@@ -98,7 +103,7 @@ cowboy-lasse          cowboy sse handler generator              jfacorro        
 genevent              gen_event file generator                  jfacorro                  0
 cowboy-crud-json      Cowboy CRUD JSON handler                  igaray                    0</pre></div>
 
-<p>This downloads the ranch generator and instantiates it with the provided name (the name is stalin in this case):</p>
+<p>This downloads the ranch generator and instantiates it with the provided name (the name is stalin in this case)</p>
 
 <div class="highlight highlight-bash"><pre><span class="o">&gt;</span> gut new ranch stalin
 Cloning ranch hosted at https://github.com/unbalancedparentheses/ranch-gutenberg-generator
