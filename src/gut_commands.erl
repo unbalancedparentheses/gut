@@ -62,7 +62,7 @@ new([ProvidedName, DesiredPath | _]) ->
       url := Url
      } ->
       io:format("Cloning ~s hosted at ~s~n", [color:greenb(ProvidedName), color:greenb(Url)]),
-      io:format("Please submit a github issue if you find any problem~n~n"),
+      io:format("Please submit a github issue if you find any problem~n"),
 
       gut_generators:clone(FullGeneratorName, GenCloneUrl),
 
