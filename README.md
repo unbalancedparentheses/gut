@@ -61,6 +61,9 @@ Run `make app shell` to launch the application.
 * creating rel/sys.config
 * creating src/name.app.src
 * creating src/name.erl
+* creating src/name_protocol.erl
+
+The job is done, boss.
 ```
 
 ##heapster
