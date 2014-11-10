@@ -44,7 +44,7 @@ cowboy-crud-json      Cowboy CRUD JSON handler                  igaray          
 ```
 
 ```bash
->gut new ranch name
+> gut new ranch name
 Cloning ranch hosted at https://github.com/unbalancedparentheses/ranch-gutenberg-generator
 Please submit a github issue if you find any problem
 
