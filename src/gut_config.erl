@@ -67,7 +67,8 @@ run_comands(Commands, Path) ->
             end, Commands).
 
 message(#{"message" := Message}) ->
-  io:format("~n~s~n", [color:greenb(Message)]);
+  io:format("~n" ++ color:greenb("Message from generator:")),
+  io:format("~n~s~n", [Message]);
 message(_) ->
   ok.
 
