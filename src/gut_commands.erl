@@ -72,7 +72,7 @@ new([ProvidedName, DesiredPath | _]) ->
 
       gut_generators:copy(CompiledPath, FinalPath),
 
-      io:format("~nYour gut project was created successfully.~n")
+      io:format("~The job is done, boss.~n")
   end,
   ok;
 new(_) ->
