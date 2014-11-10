@@ -129,8 +129,15 @@ github_search(Query, Page) ->
   case ibrowse:send_req(Url, Headers, get, Body, Options) of
     {ok, "200", _RespHeaders, RespBody} ->
       {ok, RespBody};
-    {ok, Status, RespHeaders, RespBody} ->
-      {error, {Status, RespHeaders, RespBody}}
+    {ok, "403", _, _} ->
+      throw({error, "Github API limits the number of requests to 60 per hour. "
+             "Please wait a few seconds and try again."});
+    {ok, _Status, _RespHeaders, RespBody} ->
+      throw({error, RespBody});
+    {error, req_timedout}->
+      throw({error, "Timedout while contacting github"});
+    {error, {conn_failed, {error, nxdomain}}}->
+      throw({error, "Could not contact github"})
   end.
 
 %% @doc Takes all results from the github search
