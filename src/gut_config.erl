@@ -59,18 +59,7 @@ comfirm_commands(Commands) ->
                   io:format("~p. ~s~n", [Acc, X]),
                   Acc + 1
               end, 1, Commands),
-  loop_read().
-
-loop_read() ->
-  Result = io:fread("Are you sure you want to continue: [y/n] ", "~c"),
-  case Result of
-    {ok, ["y"]} ->
-      true;
-    {ok, _} ->
-      false;
-    _ ->
-      loop_read()
-  end.
+  gut_utils:loop_read().
 
 run_comands(Commands, Path) ->
   lists:map(fun (X) ->

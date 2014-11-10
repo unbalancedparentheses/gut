@@ -6,7 +6,8 @@
          new/1,
          find/1,
          escriptize/1,
-         update/1
+         update/1,
+         implode/1
         ]).
 
 %% Commands
@@ -29,6 +30,9 @@ help() ->
                    long => ""
                   },
      "help" => #{desc => "Prints help information",
+                 long => ""
+                },
+     "implode" => #{desc => "Removes gut and all its associated files",
                  long => ""
                 }
    }.
@@ -84,6 +88,42 @@ find([Name | _]) ->
   print_generators(Generators),
   ok.
 
+escriptize([]) ->
+  gut_escriptize:run(),
+  ok;
+escriptize([Name | _]) ->
+  gut_escriptize:run(Name),
+  ok.
+
+update(_) ->
+  io:format("Updating generators..."),
+  gut_generators:update(),
+  io:format(" ~s~n", [color:greenb("done")]),
+
+  ScriptPath = escript:script_name(),
+  io:format("Updating gut binary in ~s...", [ScriptPath]),
+  Url = "https://raw.githubusercontent.com/"
+    "unbalancedparentheses/gut/master/bin/gut",
+  {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
+  file:write_file(ScriptPath, Content),
+  io:format(" ~s~n", [color:greenb("done")]),
+  ok.
+
+implode(_) ->
+  case gut_utils:loop_read() of
+    true ->
+      io:format("Hasta la vista baby~n"),
+      ScriptPath = escript:script_name(),
+      os:cmd("rm " ++ ScriptPath),
+
+      Home = gut_path:home(),
+      os:cmd("rm -rf " ++ Home),
+      ok;
+    false ->
+      io:format("Chicken... bock, bock, bock, bock, bock, begowwwwk!~n"),
+      ok
+  end.
+%% internal
 print_generators(Generators) ->
   ColNames = #{name => <<"NAME">>,
                description => <<"DESCRIPTION">>,
@@ -117,27 +157,6 @@ print_generator(#{name := GenName,
 
   io:format("~s ~s   ~s ~s~n",
             [color:green(ShortNamePadded), DescPadded, UserPadded, StarsPadded]).
-
-escriptize([]) ->
-  gut_escriptize:run(),
-  ok;
-escriptize([Name | _]) ->
-  gut_escriptize:run(Name),
-  ok.
-
-update(_) ->
-  io:format("Updating generators..."),
-  gut_generators:update(),
-  io:format(" ~s~n", [color:greenb("done")]),
-
-  ScriptPath = escript:script_name(),
-  io:format("Updating gut binary in ~s...", [ScriptPath]),
-  Url = "https://raw.githubusercontent.com/"
-    "unbalancedparentheses/gut/master/bin/gut",
-  {ok, "200", _, Content} = ibrowse:send_req(Url, [], get),
-  file:write_file(ScriptPath, Content),
-  io:format(" ~s~n", [color:greenb("done")]),
-  ok.
 
 padding_size(List) ->
   SizeList = lists:foldl(fun (#{name := Name,
