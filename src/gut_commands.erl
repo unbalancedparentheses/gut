@@ -110,6 +110,8 @@ update(_) ->
   ok.
 
 implode(_) ->
+  io:format("About to remove gut and all its associated files~n"),
+
   case gut_utils:loop_read() of
     true ->
       io:format("Hasta la vista baby~n"),
