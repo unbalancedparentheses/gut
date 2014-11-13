@@ -20,7 +20,7 @@ start_link() ->
 
 run(Command, WorkingDir) ->
   io:format("~s ~s in ~s ~n", [color:greenb("* running"), Command, WorkingDir]),
-  {Status, Msgs} = gen_server:call(?MODULE, {run, Command, WorkingDir}, 45000),
+  {Status, Msgs} = gen_server:call(?MODULE, {run, Command, WorkingDir}, 600000),
   case Status of
     0 ->
       queue:to_list(Msgs);
