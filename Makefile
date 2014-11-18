@@ -18,7 +18,7 @@ escriptize: app
 	erl -pa ebin/ -pa deps/*/ebin/ -s gut_escriptize run -s init stop -noshell
 
 publish: escriptize
-	bin/gut find
+	bin/gut search 
 	git add bin/gut
 	git commit -m "updated gut binary"
 	git push origin master
