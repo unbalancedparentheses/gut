@@ -84,9 +84,9 @@ get_yaml(Path) ->
 yaml_to_map(Mappings) ->
   Result = maps:from_list(Mappings),
 
-  Postinstall = maps:get("postinstall", Result, undefined),
+  Postinstall = maps_get("postinstall", Result, undefined),
 
-  Cwd = case maps:get("cwd", Result, false) of
+  Cwd = case maps_get("cwd", Result, false) of
           true ->
             true;
           _ ->
@@ -109,4 +109,12 @@ read_yaml(Path) ->
   catch
     _:{yamerl_exception, [{_, _, Message, _, _, _, _, _}]} ->
       throw({error, "YAML error: " ++ Message})
+  end.
+
+maps_get(Key, Map, Default) ->
+  try
+    maps:get(Key, Map)
+  catch
+    _:bad_key ->
+      Default
   end.
