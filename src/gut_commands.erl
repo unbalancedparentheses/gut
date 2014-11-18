@@ -4,7 +4,7 @@
          help/0,
          version/1,
          new/1,
-         find/1,
+         search/1,
          escriptize/1,
          update/1,
          implode/1
@@ -20,7 +20,7 @@ help() ->
      "new" => #{desc => "Creates a new project or file",
                 long => ""
                },
-     "find" => #{desc => "Find available generators",
+     "search" => #{desc => "Search available generators",
                  long => ""
                 },
      "escriptize" => #{desc => "Turn your erlang application into an escript",
@@ -78,12 +78,12 @@ new([ProvidedName, DesiredPath | _]) ->
 new(_) ->
   throw({error, "Missing generator name"}).
 
-find([]) ->
+search([]) ->
   io:format("Fetching list of generators from github...~n"),
   Generators = gut_generators:find_all(),
   print_generators(Generators),
   ok;
-find([Name | _]) ->
+search([Name | _]) ->
   Generators = gut_generators:find_all_by_name(Name),
   print_generators(Generators),
   ok.
