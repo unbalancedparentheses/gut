@@ -34,14 +34,14 @@ item_to_generator(Item) ->
     <<"stargazers_count">> := Stars,
     <<"owner">> := Owner
    } = Item,
-  #{<<"login">> := User} = Owner,
+  #{<<"login">> := OwnerName} = Owner,
 
   #{url => Url,
     clone_url => CloneUrl,
     name => Name,
     description => Description,
     stars => erlang:integer_to_binary(Stars),
-    user => User
+    owner => OwnerName
    }.
 
 find_all_by_name(FindName) ->

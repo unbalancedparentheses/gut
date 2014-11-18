@@ -84,9 +84,9 @@ get_yaml(Path) ->
 yaml_to_map(Mappings) ->
   Result = maps:from_list(Mappings),
 
-  Postinstall = maps:get("postinstall", Result, undefined),
+  Postinstall = gut_utils:maps_get("postinstall", Result, undefined),
 
-  Cwd = case maps:get("cwd", Result, false) of
+  Cwd = case gut_utils:maps_get("cwd", Result, false) of
           true ->
             true;
           _ ->

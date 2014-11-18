@@ -4,7 +4,7 @@
          help/0,
          version/1,
          new/1,
-         find/1,
+         search/1,
          escriptize/1,
          update/1,
          implode/1
@@ -20,7 +20,7 @@ help() ->
      "new" => #{desc => "Creates a new project or file",
                 long => ""
                },
-     "find" => #{desc => "Find available generators",
+     "search" => #{desc => "Search available generators",
                  long => ""
                 },
      "escriptize" => #{desc => "Turn your erlang application into an escript",
@@ -78,12 +78,12 @@ new([ProvidedName, DesiredPath | _]) ->
 new(_) ->
   throw({error, "Missing generator name"}).
 
-find([]) ->
+search([]) ->
   io:format("Fetching list of generators from github...~n"),
   Generators = gut_generators:find_all(),
   print_generators(Generators),
   ok;
-find([Name | _]) ->
+search([Name | _]) ->
   Generators = gut_generators:find_all_by_name(Name),
   print_generators(Generators),
   ok.
@@ -129,7 +129,7 @@ implode(_) ->
 print_generators(Generators) ->
   ColNames = #{name => <<"NAME">>,
                description => <<"DESCRIPTION">>,
-               user => <<"USER">>,
+               owner => <<"OWNER">>,
                stars => <<"STARS">>
               },
   Generators2 =  [ColNames| Generators],
@@ -145,40 +145,40 @@ print_generators(Generators) ->
 
 print_generator(#{name := GenName,
                   description := Desc,
-                  user := User,
+                  owner := Owner,
                   stars := Stars
                  },
-                [NamePadSize, DescPadSize, UserPadSize, StarsPadSize]) ->
+                [NamePadSize, DescPadSize, OwnerPadSize, StarsPadSize]) ->
   ShortName = gut_suffix:short_name(GenName),
   ShortName2 = erlang:binary_to_list(ShortName),
 
   ShortNamePadded = string:left(ShortName2, NamePadSize),
   DescPadded = string:left(erlang:binary_to_list(Desc), DescPadSize),
-  UserPadded = string:left(erlang:binary_to_list(User), UserPadSize),
+  OwnerPadded = string:left(erlang:binary_to_list(Owner), OwnerPadSize),
   StarsPadded = string:right(erlang:binary_to_list(Stars), StarsPadSize),
 
   io:format("~s ~s   ~s ~s~n",
-            [color:green(ShortNamePadded), DescPadded, UserPadded, StarsPadded]).
+            [color:green(ShortNamePadded), DescPadded, OwnerPadded, StarsPadded]).
 
 padding_size(List) ->
   SizeList = lists:foldl(fun (#{name := Name,
                                 description := Desc,
-                                user := User,
+                                owner := Owner,
                                 stars := Stars
-                               }, [NameList, DescList, UserList, StarsList]) ->
+                               }, [NameList, DescList, OwnerList, StarsList]) ->
                              ShortName = gut_suffix:short_name(Name),
 
                              NameSize =erlang:size(ShortName),
                              DescSize =erlang:size(Desc),
-                             UserSize =erlang:size(User),
+                             OwnerSize =erlang:size(Owner),
                              StarsSize =erlang:size(Stars),
 
                              NameList2 = [NameSize | NameList],
                              DescList2 = [DescSize | DescList],
-                             UserList2 = [UserSize | UserList],
+                             OwnerList2 = [OwnerSize | OwnerList],
                              StarsList2 = [StarsSize | StarsList],
 
-                             [NameList2, DescList2, UserList2, StarsList2]
+                             [NameList2, DescList2, OwnerList2, StarsList2]
                          end, [[], [], [], []], List),
 
   lists:map(fun(X) ->

@@ -1,6 +1,7 @@
 -module(gut_utils).
 -export([
-         loop_read/0
+         loop_read/0,
+         maps_get/3
         ]).
 
 loop_read() ->
@@ -12,4 +13,13 @@ loop_read() ->
       false;
     _ ->
       loop_read()
+  end.
+
+
+maps_get(Key, Map, Default) ->
+  try
+    maps:get(Key, Map)
+  catch
+    _:bad_key ->
+      Default
   end.
