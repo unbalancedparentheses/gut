@@ -69,7 +69,7 @@ genevent              gen_event file generator                                  
 
 This downloads the ranch generator and instantiates it with the provided name (the name is eventi in this case)
 ```bash
-gut new ranch eventi
+> gut new ranch eventi
 Cloning ranch hosted at https://github.com/unbalancedparentheses/ranch-gutenberg-generator
 Please submit a github issue if you find any problem with this generator
 
