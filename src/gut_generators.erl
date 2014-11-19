@@ -97,13 +97,16 @@ clone(GenName, GenCloneUrl) ->
 copy(Path, Destination) ->
   Files = gut_path:file_tree(Path),
 
+  io:format("Working dir ~s~n", [Destination]),
   lists:foreach(fun(File) ->
                     SourceFile = filename:join(Path, File),
                     DestFile = filename:join(Destination, File),
 
                     ok = filelib:ensure_dir(DestFile),
-                    {ok, _} = file:copy(SourceFile, DestFile)
-                end, Files).
+                    {ok, _} = file:copy(SourceFile, DestFile),
+                    print_generated(File)
+                end, Files),
+  io:format("~n").
 
 -spec update() -> ok.
 update() ->
@@ -155,3 +158,7 @@ sort_by_stars(List) ->
 
 file_exists(Path) ->
   [] /= filelib:wildcard(Path).
+
+print_generated(File) ->
+  io:format(color:greenb("* creating ")),
+  io:format("~s~n", [File]).

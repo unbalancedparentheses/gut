@@ -6,6 +6,7 @@
 
 loop_read() ->
   Result = io:fread("Are you sure you want to continue: [y/n] ", "~c"),
+  io:format("~n"),
   case Result of
     {ok, ["y"]} ->
       true;

@@ -1,8 +1,10 @@
 -module(gut_config).
 -export([
+         exists/1,
          name/0,
-         run/2,
-         get_yaml/1
+         get_yaml/1,
+         postinstall/2,
+         cleanup/2
         ]).
 
 name() ->
@@ -11,19 +13,6 @@ name() ->
 exists(Path) ->
   FullPath = filename:join(Path, name()),
   filelib:is_file(FullPath).
-
-run(CompiledPath, DesiredPath) ->
-  case exists(CompiledPath) of
-    true ->
-      Yaml = get_yaml(CompiledPath),
-      postinstall(Yaml, CompiledPath),
-
-      #{"cwd" := Cwd} = Yaml,
-      cleanup(CompiledPath, Cwd),
-      gut_path:final_path(DesiredPath, Cwd);
-    false ->
-      gut_path:final_path(DesiredPath, false)
-  end.
 
 cleanup(Path, Cwd) ->
   gut_cleanup:config(Path),
@@ -46,7 +35,8 @@ postinstall(_, _) ->
 commands(#{"commands" := Commands}, Path) ->
   case comfirm_commands(Commands) of
     true ->
-      run_comands(Commands, Path);
+      run_comands(Commands, Path),
+      io:format("~n");
     false ->
       ok
   end;
@@ -67,7 +57,7 @@ run_comands(Commands, Path) ->
             end, Commands).
 
 message(#{"message" := Message}) ->
-  io:format("~n" ++ color:greenb("Message from generator:")),
+  io:format(color:greenb("Message from generator:")),
   io:format("~n~s~n", [Message]);
 message(_) ->
   ok.

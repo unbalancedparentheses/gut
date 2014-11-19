@@ -13,8 +13,7 @@ compile(FullGeneratorName, Name, PatternValues) ->
   lists:foreach(
     fun (File) ->
         FileFullPath = filename:join(Destination, File),
-        update(FileFullPath, Name, PatternValues),
-        print_generated(Name, File)
+        update(FileFullPath, Name, PatternValues)
     end,
     Files),
   io:format("~n"),
@@ -51,7 +50,3 @@ rename(FileName, Value) ->
   NewFilename = erlang:iolist_to_binary(re:replace(FileName, "name", Value)),
   file:rename(FileName, NewFilename),
   NewFilename.
-
-print_generated(Name, File) ->
-  io:format(color:greenb("* creating ")),
-  io:format("~s/~s~n", [Name, File]).

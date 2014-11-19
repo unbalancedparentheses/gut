@@ -62,15 +62,20 @@ new([ProvidedName, DesiredPath | _]) ->
       url := Url
      } ->
       io:format("Cloning ~s hosted at ~s~n", [color:greenb(ProvidedName), color:greenb(Url)]),
-      io:format("Please submit a github issue if you find any problem~n"),
+      io:format("Please submit a github issue if you find any problem with this generator~n"),
 
       gut_generators:clone(FullGeneratorName, GenCloneUrl),
 
       CompiledPath = gut_compile:compile(FullGeneratorName, Name, Values),
 
-      FinalPath = gut_config:run(CompiledPath, DesiredPath),
+      Yaml = gut_config:get_yaml(CompiledPath),
+      #{"cwd" := Cwd} = Yaml,
+      gut_config:cleanup(CompiledPath, Cwd),
+      FinalPath = gut_path:final_path(DesiredPath, Cwd),
 
       gut_generators:copy(CompiledPath, FinalPath),
+
+      gut_config:postinstall(Yaml, FinalPath),
 
       io:format("~nThe job is done, boss.~n")
   end,
