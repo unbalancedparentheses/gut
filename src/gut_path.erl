@@ -4,7 +4,8 @@
          ensure_home/0,
          file_tree/1,
          file_tree/2,
-         final_path/2
+         final_path/2,
+         not_exists/1
         ]).
 
 home() ->
@@ -38,4 +39,13 @@ final_path(DesiredPath, Cwd) ->
       filename:dirname(filename:absname(DesiredPath));
     false->
       filename:absname(DesiredPath)
+  end.
+
+not_exists(DestFile) ->
+  case filelib:is_file(DestFile) of
+    true ->
+      ErrorMsg = "File " ++ DestFile ++ " already exists",
+      throw({error, ErrorMsg});
+    false->
+      ok
   end.

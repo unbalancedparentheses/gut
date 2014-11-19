@@ -102,6 +102,7 @@ copy(Path, Destination) ->
                     SourceFile = filename:join(Path, File),
                     DestFile = filename:join(Destination, File),
 
+                    ok = gut_path:not_exists(DestFile),
                     ok = filelib:ensure_dir(DestFile),
                     {ok, _} = file:copy(SourceFile, DestFile),
                     print_generated(File)
