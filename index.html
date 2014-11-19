@@ -37,8 +37,6 @@
 <p>Gutenberg is a massive template printing, aka scaffolding, tool for Erlang. Like rails generate or yeoman.
 Gutenberg was highly inspired by <a href="https://github.com/lfe/lfetool">lfetool</a>.</p>
 
-<script type="text/javascript" src="https://asciinema.org/a/13793.js" id="asciicast-13793" async data-speed="2" data-autoplay="true" data-loop="true"></script>
-
 <h1>
 <a id="caution" class="anchor" href="#caution" aria-hidden="true"><span class="octicon octicon-link"></span></a>CAUTION</h1>
 
@@ -50,9 +48,8 @@ Gutenberg was highly inspired by <a href="https://github.com/lfe/lfetool">lfetoo
 <p>Version 1 will be released this week after I get some input and comments from the community. Please test it and let me know what you think! Obviously this tool is meant for erlang newcomers or people like me that like the tools available in the nodejs, clojure, ruby and python communities.</p>
 
 <ul>
-<li>Present - v0.8: Basic functionality</li>
-<li>12 November - v0.9: Better logs</li>
-<li>15 November - v1.0: Support many variables in generators. Better documentation for example on how to create your own generators. Odds and ends</li>
+<li>Present - v0.9: Basic functionality</li>
+<li>25 November - v1.0: Support many variables in generators. Better documentation for example on how to create your own generators. Odds and ends</li>
 </ul>
 
 <h1>
@@ -77,68 +74,73 @@ sudo mv ./gut /usr/local/bin/</pre></div>
 
 <p>The generators are searched and downloaded from github (like yeoman) so that anybody can create a generator and use it with gut</p>
 
-<div class="highlight highlight-bash"><pre><span class="o">&gt;</span> gut <span class="nf">help</span>
-escriptize <span class="c1"># Turn your erlang application into an escript</span>
-find       <span class="c1"># Find available generators</span>
-<span class="nf">help</span>       <span class="c1"># Prints help information</span>
-implode    <span class="c1"># Removes gut and all its associated files</span>
-new        <span class="c1"># Creates a new project or file</span>
-update     <span class="c1"># Get the latest version of the gut executable and update.gens</span>
-version    <span class="c1"># Prints gutenberg version</span></pre></div>
+<div class="highlight highlight-bash"><pre><span class="pl-k">&gt;</span> gut <span class="pl-s3">help</span>
+escriptize <span class="pl-c"># Turn your erlang application into an escript</span>
+<span class="pl-s3">help</span>       <span class="pl-c"># Prints help information</span>
+implode    <span class="pl-c"># Removes gut and all its associated files</span>
+new        <span class="pl-c"># Creates a new project or file</span>
+search     <span class="pl-c"># Search available generators</span>
+update     <span class="pl-c"># Get the latest version of the gut executable and update.gens</span>
+version    <span class="pl-c"># Prints gutenberg version</span></pre></div>
 
-<div class="highlight highlight-bash"><pre><span class="o">&gt;</span> gut find
+<div class="highlight highlight-bash"><pre><span class="pl-k">&gt;</span> gut search
 Fetching list of generators from github...
-NAME                  DESCRIPTION                               USER                  STARS
-ranch                 ranch project generator                   unbalancedparentheses     3
-library               library project generator                 jfacorro                  2
-application           application project generator             jfacorro                  2
-supervisor            supervisor file generator                 unbalancedparentheses     2
-genserver             gen_server file generator                 unbalancedparentheses     2
-supervised-gen-server supervised gen_server project generator   jfacorro                  2
-cowboy                cowboy project generator                  unbalancedparentheses     1
-cowboy-websocket      Cowboy Websocket handler                  igaray                    1
-cowboy-rest-basic     Basic Cowboy REST handler                 igaray                    1
-cowboy-rest-full      Full Cowboy REST handler                  igaray                    1
-cowboy-http-basic     Basic Cowboy HTTP handler                 igaray                    1
-genfsm                gen_fsm file generator                    jfacorro                  0
-cowboy-lasse          cowboy sse handler generator              jfacorro                  0
-genevent              gen_event file generator                  jfacorro                  0
-cowboy-crud-json      Cowboy CRUD JSON handler                  igaray                    0</pre></div>
+NAME                  DESCRIPTION                                                                     OWNER                 STARS
+ranch                 ranch project generator                                                         unbalancedparentheses     3
+library               library project generator                                                       jfacorro                  2
+application           application project generator                                                   jfacorro                  2
+supervisor            supervisor file generator                                                       unbalancedparentheses     2
+genserver             gen_server file generator                                                       unbalancedparentheses     2
+cowboy-bones          An Erlang Cowboy web app Gutenberg generator with i18n, templating, and more    gmr                       2
+supervised-gen-server supervised gen_server project generator                                         jfacorro                  2
+cowboy-websocket      Cowboy Websocket handler                                                        igaray                    1
+cowboy                cowboy project generator                                                        unbalancedparentheses     1
+cowboy-crud-json      Cowboy CRUD JSON handler                                                        igaray                    1
+cowboy-rest-basic     Basic Cowboy REST handler                                                       igaray                    1
+cowboy-http-basic     Basic Cowboy HTTP handler                                                       igaray                    1
+cowboy-rest-full      Full Cowboy REST handler                                                        igaray                    1
+cowboy-lasse          cowboy sse handler generator                                                    jfacorro                  0
+genfsm                gen_fsm file generator                                                          jfacorro                  0
+elli                  elli project generator - web server                                             jfacorro                  0
+genevent              gen_event file generator                                                        jfacorro                  0</pre></div>
 
-<p>This downloads the ranch generator and instantiates it with the provided name (the name is stalin in this case)</p>
+<p>This downloads the ranch generator and instantiates it with the provided name (the name is eventi in this case)</p>
 
-<div class="highlight highlight-bash"><pre><span class="o">&gt;</span> gut new ranch stalin
+<div class="highlight highlight-bash"><pre><span class="pl-k">&gt;</span> gut new ranch eventi
 Cloning ranch hosted at https://github.com/unbalancedparentheses/ranch-gutenberg-generator
-Please submit a github issue <span class="k">if</span> you find any problem
+Please submit a github issue <span class="pl-k">if</span> you find any problem with this generator
+
+Working dir /Users/unbalancedparentheses/projects/gut/eventi
+<span class="pl-k">*</span> creating .gitignore
+<span class="pl-k">*</span> creating Makefile
+<span class="pl-k">*</span> creating README.md
+<span class="pl-k">*</span> creating erlang.mk
+<span class="pl-k">*</span> creating rel/sys.config
+<span class="pl-k">*</span> creating src/eventi.app.src
+<span class="pl-k">*</span> creating src/eventi.erl
+<span class="pl-k">*</span> creating src/eventi_protocol.erl
 
 The generator wants to run the following list of commands:
 1. make
-Are you sure you want to <span class="k">continue</span>: [y/n] n
+Are you sure you want to <span class="pl-k">continue</span>: [y/n] n
 
 Message from generator:
-Run <span class="si">`make app shell`</span> to launch the application.
+Run <span class="pl-s1"><span class="pl-pds">`</span>make app shell<span class="pl-pds">`</span></span> to launch the application.
 
-<span class="o">*</span> creating .gitignore
-<span class="o">*</span> creating Makefile
-<span class="o">*</span> creating README.md
-<span class="o">*</span> creating erlang.mk
-<span class="o">*</span> creating rel/sys.config
-<span class="o">*</span> creating src/stalin.app.src
-<span class="o">*</span> creating src/stalin.erl
-<span class="o">*</span> creating src/stalin_protocol.erl
-
-The job is <span class="k">done</span>, boss.
-<span class="o">&gt;</span> tree stalin/
-stalin/
+The job is <span class="pl-k">done</span>, boss.
+<span class="pl-k">&gt;</span> tree eventi
+eventi
 ├── Makefile
 ├── README.md
 ├── erlang.mk
 ├── rel
 │   └── sys.config
 └── src
-    ├── stalin.app.src
-    ├── stalin.erl
-    └── stalin_protocol.erl</pre></div>
+    ├── eventi.app.src
+    ├── eventi.erl
+    └── eventi_protocol.erl
+
+2 directories, 7 files</pre></div>
 
 <h2>
 <a id="heapster" class="anchor" href="#heapster" aria-hidden="true"><span class="octicon octicon-link"></span></a>heapster</h2>
