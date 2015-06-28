@@ -8,7 +8,7 @@ dep_mixer = git https://github.com/opscode/mixer.git master
 dep_sync = git https://github.com/rustyio/sync.git master
 dep_colorerl = git https://github.com/unbalancedparentheses/colorerl.git master
 dep_thorerl = git https://github.com/unbalancedparentheses/thorerl.git master
-dep_yamerl = git https://github.com/unbalancedparentheses/yamerl.git master
+dep_yamerl = git https://github.com/yakaz/yamerl.git master
 
 include erlang.mk
 
