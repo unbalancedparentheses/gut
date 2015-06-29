@@ -5,15 +5,10 @@ gutenberg: gut is good!
 Gutenberg is a massive template printing, aka scaffolding, tool for Erlang. Like rails generate or yeoman.
 Gutenberg was highly inspired by [lfetool](https://github.com/lfe/lfetool).
 
-#CAUTION
-
-Erlang 17 or superior is needed. HOWEVER due to an SSL bug in 17.3, 17.3 is not supported. Please update to 17.3 rev2 from [erlang solutions](https://www.erlang-solutions.com/downloads/download-erlang-otp) or downgrade to a previous 17 version.
+Erlang 17 or superior is needed. 
 
 #roadmap
-Version 1 will be released this week after I get some input and comments from the community. Please test it and let me know what you think! Obviously this tool is meant for erlang newcomers or people like me that like the tools available in the nodejs, clojure, ruby and python communities.
-
-- Present - v0.9: Basic functionality
-- 15 November - v1.0: Support many variables in generators. Better documentation for example on how to create your own generators. Odds and ends
+This tool was originally created for erlang newcomers. Now I am interested in making it useful for any language/platform. Erlang is an awesome language for creating backend services, however it is not so great for coding command line utilities. That is why I am porting gut to go. Go is not the best language available in my opinion: go's type system is not good enough and it does not have generics. I would prefer to use Haskell or OCaml, but go has a superb cross compilation tools like goxc that will let me generate binaries for each platform.
 
 #tl;dr. install
 
