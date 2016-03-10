@@ -228,43 +228,45 @@ func compileFiles(fullPath string, f os.FileInfo, err error) error {
 }
 
 func commands() {
-	boldWhite.Printf("Template wants to run the following commands with path=%s:\n", fullPath)
+	if len(templateConfig.Commands) != 0 {
+		boldWhite.Printf("Template wants to run the following commands with path=%s:\n", fullPath)
 
-	for n, v := range templateConfig.Commands {
-		command := v[0]
-		arguments := v[1:len(v)]
-
-		fmt.Printf("%d. ", n+1)
-		printCommand(command, arguments)
-		println()
-	}
-
-	println()
-	boldWhite.Printf("Do you want to run this commands? [N/y] ")
-	input := ""
-	fmt.Scanln(&input)
-
-	if input == "y" || input == "Y" {
-		for _, v := range templateConfig.Commands {
-			cmdString := v[0]
+		for n, v := range templateConfig.Commands {
+			command := v[0]
 			arguments := v[1:len(v)]
 
-			color.New(color.FgGreen).Print("* running ")
-			printCommand(cmdString, arguments)
+			fmt.Printf("%d. ", n+1)
+			printCommand(command, arguments)
 			println()
+		}
 
-			command := exec.Command(cmdString, arguments...)
-			command.Dir = fullPath
+		println()
+		boldWhite.Printf("Do you want to run this commands? [N/y] ")
+		input := ""
+		fmt.Scanln(&input)
 
-			out, err := command.Output()
-			if err != nil {
-				log.Fatal(err)
-			} else if string(out) != "" {
-				fmt.Printf("> %s", out)
+		if input == "y" || input == "Y" {
+			for _, v := range templateConfig.Commands {
+				cmdString := v[0]
+				arguments := v[1:len(v)]
+
+				color.New(color.FgGreen).Print("* running ")
+				printCommand(cmdString, arguments)
+				println()
+
+				command := exec.Command(cmdString, arguments...)
+				command.Dir = fullPath
+
+				out, err := command.Output()
+				if err != nil {
+					log.Fatal(err)
+				} else if string(out) != "" {
+					fmt.Printf("> %s", out)
+				}
 			}
 		}
+		println()
 	}
-	println()
 }
 
 func printCommand(command string, arguments []string) {
@@ -278,7 +280,7 @@ func printCommand(command string, arguments []string) {
 // commands can be optional
 // compile commands with variables
 // name in the string should not have a / slash. if it has, we should only use the first
-// add describe template subcommand
+// add show/info/describe template subcommand. clone the repo into a tmp dir to delete after retrieving the information. should print variables, commands, description, creator, etc.
 
 // commands should not be inside of an array in gut.template
 // add curl command in readme like docker compose has. generate gox builds
@@ -287,11 +289,12 @@ func printCommand(command string, arguments []string) {
 // work on temporary directory? if yes, then use os tempdir function. think if this is useful
 
 // clone templates with depth one
-// option to specify tag or commit id of generator
 // add homebrew formulas
 // add documentation in the readme
-// store templates in /home/.gut/templates/. only fetch if template not found in that path
+// store templates in /home/.config/gut/templates/. only fetch if template not found in that path
 // update stored templates
 // paginate to get all answers
 // add subcommand to compile current working dir. useful for developing templates
-// add option to fill variables from a file
+// develop erlang cowboy template
+
+// add option to fill from shell like ./rebar3 new plugin name=demo author_name="Fred H."
