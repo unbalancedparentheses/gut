@@ -47,7 +47,10 @@ func main() {
 
 	app := cli.NewApp()
 	app.Name = "gut"
-	app.Usage = "make an explosive entrance"
+	app.Usage = "tool that retrieves templates and compile them to scaffold projects and create standalone files"
+	app.Version = version
+	app.Author = "Federico Carrone"
+	app.Email = "federico.carrone@gmail.com"
 
 	app.Commands = []cli.Command{
 		{
@@ -141,11 +144,16 @@ func new(templateName string) {
 	fmt.Printf("Your %s project was created successfully.\n", templateName)
 }
 
-func config(name string, path string) {
-	file, _ := ioutil.ReadFile(path)
-	err := yaml.Unmarshal(file, &templateConfig) //TODO check for erros
-	if err != nil {
-		log.Fatal(err)
+func config(name string, configPath string) {
+	configFile, errFile := ioutil.ReadFile(configPath)
+
+	if errFile != nil {
+		log.Fatal("Configuration file not present inside template\nError: ", errFile)
+	}
+
+	errYaml := yaml.Unmarshal(configFile, &templateConfig)
+	if errYaml != nil {
+		log.Fatal(errYaml)
 	}
 
 	templateConfig.Variables["name"] = name
@@ -220,7 +228,7 @@ func compileFiles(fullPath string, f os.FileInfo, err error) error {
 }
 
 func commands() {
-	boldWhite.Println("Commands:")
+	boldWhite.Printf("Template wants to run the following commands with path=%s:\n", fullPath)
 
 	for n, v := range templateConfig.Commands {
 		command := v[0]
@@ -267,18 +275,21 @@ func printCommand(command string, arguments []string) {
 }
 
 // inmediate tasks:
-// add curl command in readme like docker compose has. generate gox builds
-// work on temporary directory? if yes, then use os tempdir function. think if this is useful
-// check that gut.template is present
-// support templates that remove the cloned folder using the delete folder option
-// commands not be inside of an array in gut.template
+// commands can be optional
+// compile commands with variables
 // name in the string should not have a / slash. if it has, we should only use the first
 // add describe template subcommand
+
+// commands should not be inside of an array in gut.template
+// add curl command in readme like docker compose has. generate gox builds
+
+// support templates that remove the cloned folder using the delete folder option
+// work on temporary directory? if yes, then use os tempdir function. think if this is useful
+
 // clone templates with depth one
 // option to specify tag or commit id of generator
 // add homebrew formulas
 // add documentation in the readme
-// add version in gut help
 // store templates in /home/.gut/templates/. only fetch if template not found in that path
 // update stored templates
 // paginate to get all answers
