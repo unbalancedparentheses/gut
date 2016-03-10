@@ -269,18 +269,18 @@ func printCommand(command string, arguments []string) {
 // inmediate tasks:
 // add curl command in readme like docker compose has. generate gox builds
 // work on temporary directory? if yes, then use os tempdir function. think if this is useful
-// commands not be inside of an array in gut.template
 // check that gut.template is present
+// support templates that remove the cloned folder using the delete folder option
+// commands not be inside of an array in gut.template
 // name in the string should not have a / slash. if it has, we should only use the first
 // add describe template subcommand
 // clone templates with depth one
-// ask for specific tag or commit id of generator
-// support templates that remove the cloned folder using the delete folder option
-// add subcommand to compile current working dir. useful for developing templates
-// store templates in /home/.gut/templates/. only fetch if template not found in that path
-// update stored templates
-// add option to fill variables from a file
+// option to specify tag or commit id of generator
 // add homebrew formulas
-// paginate to get all answers
 // add documentation in the readme
 // add version in gut help
+// store templates in /home/.gut/templates/. only fetch if template not found in that path
+// update stored templates
+// paginate to get all answers
+// add subcommand to compile current working dir. useful for developing templates
+// add option to fill variables from a file
