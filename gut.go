@@ -24,6 +24,8 @@ var (
 	templateFile   = "gut.template"
 	templateConfig configuration
 	cwd            string
+	name           string
+	fullPath       string
 )
 
 var (
@@ -66,8 +68,8 @@ func main() {
 					fmt.Print("Not enough arguments")
 				}
 				templateName := c.Args().First()
-				providedPath := c.Args()[1]
-				new(templateName, providedPath)
+				name = c.Args()[1]
+				new(templateName)
 			},
 		},
 		{
@@ -115,10 +117,10 @@ func search(filter string) {
 	}
 }
 
-func new(templateName string, providedPath string) {
+func new(templateName string) {
 	repoName := templateName + suffix
 	repoURL := "https://github.com/" + repoName + ".git"
-	fullPath := cwd + "/" + providedPath + "/"
+	fullPath = cwd + "/" + name + "/"
 	gitopts := &git.CloneOptions{}
 
 	boldWhite.Printf("Retrieving %s via %s\n", templateName, repoURL)
@@ -130,18 +132,21 @@ func new(templateName string, providedPath string) {
 		println()
 	}
 
-	name := providedPath //TODO get name after last slash
 	config(name, fullPath+templateFile)
 	askForVariables()
-	clean(fullPath)
-	compile(fullPath)
-	commands(fullPath)
+	clean()
+	compile()
+	commands()
 	fmt.Printf("Your %s project was created successfully.\n", templateName)
 }
 
 func config(name string, path string) {
 	file, _ := ioutil.ReadFile(path)
-	yaml.Unmarshal(file, &templateConfig) //TODO check for erros
+	err := yaml.Unmarshal(file, &templateConfig) //TODO check for erros
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	templateConfig.Variables["name"] = name
 }
 
@@ -164,14 +169,13 @@ func askForVariables() {
 	println()
 }
 
-func clean(fullPath string) {
+func clean() {
 	os.Remove(fullPath + templateFile)
 	os.RemoveAll(fullPath + ".git/")
 	os.Remove(fullPath + ".gitignore")
 }
 
-func compile(fullPath string) {
-	//if delete folder option is set, change full path to path without name
+func compile() {
 	boldWhite.Printf("Generating fresh 'gut new' %s project:\n", templateConfig.Variables["name"])
 	filepath.Walk(fullPath, compileDirs)
 	filepath.Walk(fullPath, compileFiles)
@@ -210,7 +214,7 @@ func compileFiles(fullPath string, f os.FileInfo, err error) error {
 	return nil
 }
 
-func commands(fullPath string) {
+func commands() {
 	boldWhite.Println("Commands:")
 
 	for n, v := range templateConfig.Commands {
@@ -259,9 +263,10 @@ func printCommand(command string, arguments []string) {
 
 // inmediate tasks:
 // use paths functions instead of concatenaning strings
-// store path in configuration instead of passing it each time
 // add curl command in makefile like docker compose has
 // paginate to get all answers
+// commands not be inside of an array in gut.template
+// check that gut.template is present
 // work on temporary directory? if yes, then use os tempdir function. don't know if this is useful
 
 // new features:
