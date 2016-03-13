@@ -76,6 +76,15 @@ func main() {
 			},
 		},
 		{
+			Name:    "describe",
+			Aliases: []string{"d"},
+			Usage:   "describe",
+			Action: func(c *cli.Context) {
+				templateName := c.Args().First()
+				describe(templateName)
+			},
+		},
+		{
 			Name:    "version",
 			Aliases: []string{"v"},
 			Usage:   "version",
@@ -232,9 +241,11 @@ func commands() {
 		boldWhite.Printf("Template wants to run the following commands with path=%s:\n", fullPath)
 
 		for n, command := range templateConfig.Commands {
-			fmt.Printf("%d. ", n+1)
+			cmdCompiled := mustache.Render(command, templateConfig.Variables)
+			templateConfig.Commands[n] = cmdCompiled
 
-			fmt.Printf("%s", command)
+			fmt.Printf("%d. ", n+1)
+			fmt.Printf("%s", cmdCompiled)
 			println()
 		}
 
@@ -268,16 +279,43 @@ func commands() {
 	}
 }
 
-// inmediate tasks:
-// break command into many pieces. so that it works.
+func describe(templateName string) {
+	repoName := templateName + suffix
+	repoURL := "https://github.com/" + repoName + ".git"
 
-// compile commands with variables
+	//change fullpath to temporary directory
+	fullPath = path.Join(cwd, name)
+	gitopts := &git.CloneOptions{}
+
+	_, err := git.Clone(repoURL, fullPath, gitopts)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		println()
+	}
+
+	config(name, path.Join(fullPath, templateFile))
+
+	for key, defaultValue := range templateConfig.Variables {
+		if key != "name" {
+			fmt.Printf("%s [%s]: ", key, defaultValue)
+		}
+	}
+
+	for n, command := range templateConfig.Commands {
+		fmt.Printf("%d. ", n+1)
+		fmt.Printf("%s", command)
+		println()
+	}
+}
+
+// inmediate tasks:
+// add show/info/describe template subcommand. clone the repo into a tmp dir to delete after retrieving the information. should print variables, commands, description, creator, etc.
 // support templates that remove the cloned folder using the delete folder option
 // work on temporary directory? if yes, then use os tempdir function. think if this is useful
 // add curl command in readme like docker compose has. generate gox builds
 // add homebrew formulas
 // add documentation in the readme
-// add show/info/describe template subcommand. clone the repo into a tmp dir to delete after retrieving the information. should print variables, commands, description, creator, etc.
 // add subcommand to compile current working dir. useful for developing templates
 // develop erlang cowboy template
 // add option to fill from shell like ./rebar3 new plugin name=demo author_name="Fred H."
