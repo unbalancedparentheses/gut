@@ -36,7 +36,7 @@ var (
 type configuration struct {
 	Variables map[string]string `yaml:"variables"`
 	Options   map[string]string `yaml:"options"`
-	Commands  [][]string        `yaml:"commands"`
+	Commands  []string          `yaml:"commands"`
 }
 
 func main() {
@@ -153,7 +153,7 @@ func config(name string, configPath string) {
 
 	errYaml := yaml.Unmarshal(configFile, &templateConfig)
 	if errYaml != nil {
-		log.Fatal(errYaml)
+		log.Fatal("Configuration file is not correctly formated\nError: ", errYaml)
 	}
 
 	templateConfig.Variables["name"] = name
@@ -231,12 +231,10 @@ func commands() {
 	if len(templateConfig.Commands) != 0 {
 		boldWhite.Printf("Template wants to run the following commands with path=%s:\n", fullPath)
 
-		for n, v := range templateConfig.Commands {
-			command := v[0]
-			arguments := v[1:len(v)]
-
+		for n, command := range templateConfig.Commands {
 			fmt.Printf("%d. ", n+1)
-			printCommand(command, arguments)
+
+			fmt.Printf("%s", command)
 			println()
 		}
 
@@ -246,13 +244,14 @@ func commands() {
 		fmt.Scanln(&input)
 
 		if input == "y" || input == "Y" {
-			for _, v := range templateConfig.Commands {
-				cmdString := v[0]
-				arguments := v[1:len(v)]
-
+			for _, cmdTemplate := range templateConfig.Commands {
 				color.New(color.FgGreen).Print("* running ")
-				printCommand(cmdString, arguments)
+				fmt.Printf("%s", cmdTemplate)
 				println()
+
+				cmdArray := strings.Split(cmdTemplate, " ")
+				cmdString := cmdArray[0]
+				arguments := cmdArray[1:len(cmdArray)]
 
 				command := exec.Command(cmdString, arguments...)
 				command.Dir = fullPath
@@ -269,32 +268,20 @@ func commands() {
 	}
 }
 
-func printCommand(command string, arguments []string) {
-	fmt.Printf("%s", command)
-	for _, argument := range arguments {
-		fmt.Printf(" %s", argument)
-	}
-}
-
 // inmediate tasks:
-// commands can be optional
+// break command into many pieces. so that it works.
+
 // compile commands with variables
-// name in the string should not have a / slash. if it has, we should only use the first
-// add show/info/describe template subcommand. clone the repo into a tmp dir to delete after retrieving the information. should print variables, commands, description, creator, etc.
-
-// commands should not be inside of an array in gut.template
-// add curl command in readme like docker compose has. generate gox builds
-
 // support templates that remove the cloned folder using the delete folder option
 // work on temporary directory? if yes, then use os tempdir function. think if this is useful
-
-// clone templates with depth one
+// add curl command in readme like docker compose has. generate gox builds
 // add homebrew formulas
 // add documentation in the readme
-// store templates in /home/.config/gut/templates/. only fetch if template not found in that path
-// update stored templates
-// paginate to get all answers
+// add show/info/describe template subcommand. clone the repo into a tmp dir to delete after retrieving the information. should print variables, commands, description, creator, etc.
 // add subcommand to compile current working dir. useful for developing templates
 // develop erlang cowboy template
-
 // add option to fill from shell like ./rebar3 new plugin name=demo author_name="Fred H."
+// store templates in /home/.config/gut/templates/. only fetch if template not found in that path
+// update stored templates
+// clone templates with depth one
+// paginate to get all answers in search
