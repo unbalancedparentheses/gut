@@ -284,7 +284,7 @@ func describe(templateName string) {
 	repoURL := "https://github.com/" + repoName + ".git"
 
 	//change fullpath to temporary directory
-	fullPath = path.Join(cwd, name)
+	fullPath = path.Join(cwd, "prueba")
 	gitopts := &git.CloneOptions{}
 
 	_, err := git.Clone(repoURL, fullPath, gitopts)
@@ -296,12 +296,16 @@ func describe(templateName string) {
 
 	config(name, path.Join(fullPath, templateFile))
 
+	boldWhite.Println("Variables in template")
 	for key, defaultValue := range templateConfig.Variables {
 		if key != "name" {
-			fmt.Printf("%s [%s]: ", key, defaultValue)
+			fmt.Printf("%s [%s]\n", key, defaultValue)
 		}
 	}
 
+	println()
+
+	boldWhite.Println("Commands in template")
 	for n, command := range templateConfig.Commands {
 		fmt.Printf("%d. ", n+1)
 		fmt.Printf("%s", command)
@@ -310,7 +314,8 @@ func describe(templateName string) {
 }
 
 // inmediate tasks:
-// add show/info/describe template subcommand. clone the repo into a tmp dir to delete after retrieving the information. should print variables, commands, description, creator, etc.
+// clone to a temporary path with describe. print author, github description and url
+// print help a la mix help.  execute command to check it.
 // support templates that remove the cloned folder using the delete folder option
 // work on temporary directory? if yes, then use os tempdir function. think if this is useful
 // add curl command in readme like docker compose has. generate gox builds
