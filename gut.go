@@ -283,12 +283,13 @@ func describe(templateName string) {
 	repoName := templateName + suffix
 	repoURL := "https://github.com/" + repoName + ".git"
 
-	//change fullpath to temporary directory
-	fullPath = path.Join(cwd, "prueba")
+	tempDir := os.TempDir()
+	fullPath = path.Join(tempDir, "prueba")
 	gitopts := &git.CloneOptions{}
 
 	_, err := git.Clone(repoURL, fullPath, gitopts)
 	if err != nil {
+		os.RemoveAll(fullPath)
 		log.Fatal(err)
 	} else {
 		println()
@@ -311,20 +312,30 @@ func describe(templateName string) {
 		fmt.Printf("%s", command)
 		println()
 	}
+
+	os.RemoveAll(fullPath)
 }
 
 // inmediate tasks:
-// clone to a temporary path with describe. print author, github description and url
+// remove tmp path if issue while executing config in describe
+// in describe print author, github description and url
 // print help a la mix help.  execute command to check it.
+// if in describe and new the repo does not exist you get 2016/03/13 17:57:58 authentication required but no callback set
+
 // support templates that remove the cloned folder using the delete folder option
 // work on temporary directory? if yes, then use os tempdir function. think if this is useful
+
+// add subcommand to compile current working dir. useful for developing templates
+// develop erlang cowboy template
+
+// add option to fill from shell like ./rebar3 new plugin name=demo author_name="Fred H."
+
+// store templates in /home/.config/gut/templates/. only fetch if template not found in that path
+// update stored templates
+
+// clone templates with depth one
+// paginate to get all answers in search
+
 // add curl command in readme like docker compose has. generate gox builds
 // add homebrew formulas
 // add documentation in the readme
-// add subcommand to compile current working dir. useful for developing templates
-// develop erlang cowboy template
-// add option to fill from shell like ./rebar3 new plugin name=demo author_name="Fred H."
-// store templates in /home/.config/gut/templates/. only fetch if template not found in that path
-// update stored templates
-// clone templates with depth one
-// paginate to get all answers in search
